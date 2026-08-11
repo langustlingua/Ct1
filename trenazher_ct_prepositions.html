@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тренажёр: Предлоги и сочетаемость (ЦТ/ЦЭ)</title>
+    <style>
+        :root {
+            --primary: #1a73e8; --bg: #f8f9fa; --card: #ffffff; --text: #202124;
+            --success: #34a853; --danger: #ea4335; --border: #dadce0;
+        }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 20px; line-height: 1.6; }
+        .container { max-width: 800px; margin: 0 auto; }
+
+        .tabs { display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; }
+        .tab-btn { flex: 1; min-width: 140px; padding: 12px; border: 1px solid var(--border); background: white; border-radius: 8px; cursor: pointer; font-weight: 500; font-size: 14px; }
+        .tab-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+        .tab-panel.hidden { display: none; }
+
+        details { background: var(--card); padding: 15px 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px; border-left: 4px solid var(--primary); }
+        summary { font-weight: bold; color: var(--primary); cursor: pointer; }
+
+        .theory-intro { font-size: 15px; margin-bottom: 20px; color: #444; text-align: justify; }
+        .theory-cards { display: flex; flex-direction: column; gap: 14px; margin-bottom: 20px; }
+        .theory-card { display: grid; grid-template-columns: 56px 1fr; gap: 16px; padding: 16px 18px; border-radius: 10px; background: #fafbfc; border: 1px solid var(--border); border-left-width: 5px; }
+        .theory-card .num { display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: bold; color: white; border-radius: 8px; height: 40px; align-self: start; }
+        .theory-card h4 { margin: 0 0 6px 0; font-size: 15px; }
+        .theory-card p { margin: 0 0 8px 0; font-size: 14px; color: #333; }
+        .theory-card .ex { font-size: 13px; background: white; border: 1px dashed var(--border); border-radius: 6px; padding: 8px 10px; }
+        .theory-card .ex em { color: #444; }
+        .ex-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+        .ex-list li { background: white; border: 1px dashed var(--border); border-radius: 6px; padding: 8px 10px; font-size: 13px; }
+        .ex-list li::before { content: "→ "; color: var(--primary); font-weight: bold; }
+        .ex-list li em { color: #444; font-style: normal; font-weight: 600; }
+        .wrong-ex { color: var(--danger); text-decoration: line-through; text-decoration-thickness: 2px; font-weight: 600; }
+        .theory-card.t1 { border-left-color: #1a73e8; } .theory-card.t1 .num { background: #1a73e8; }
+        .theory-card.t2 { border-left-color: #34a853; } .theory-card.t2 .num { background: #34a853; }
+        .theory-card.t3 { border-left-color: #9c27b0; } .theory-card.t3 .num { background: #9c27b0; }
+        .theory-card.t4 { border-left-color: #f9902b; } .theory-card.t4 .num { background: #f9902b; }
+        .theory-card.t5 { border-left-color: #ea4335; } .theory-card.t5 .num { background: #ea4335; }
+        .theory-exam-tip { background: #e8f0fe; border: 1px solid var(--primary); border-radius: 10px; padding: 14px 18px; font-size: 14px; margin-bottom: 20px; }
+        .theory-exam-tip strong { color: var(--primary); }
+
+        .card { background: var(--card); border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); padding: 30px; margin-bottom: 20px; }
+        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-bottom: 20px; }
+        .task-id { font-weight: bold; color: var(--primary); }
+        .score { font-size: 14px; padding: 5px 12px; border: 1px solid var(--border); border-radius: 20px; }
+
+        .question-text { font-size: 16px; margin-bottom: 25px; text-align: justify; }
+        .blank { display: inline-block; min-width: 30px; border-bottom: 2px solid var(--primary); color: var(--primary); font-weight: bold; padding: 0 5px; text-decoration: underline; text-underline-offset: 4px; }
+
+        .options-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 25px; }
+        .option-item { padding: 12px 16px; border: 1px solid var(--border); border-radius: 8px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 10px; }
+        .option-item:hover { background: #f1f3f4; }
+        .option-item.selected { border-color: var(--primary); background: #e8f0fe; }
+        .option-item.correct { border-color: var(--success); background: #e6f4ea; }
+        .option-item.wrong { border-color: var(--danger); background: #fce8e6; }
+        .option-item input[type="radio"] { accent-color: var(--primary); transform: scale(1.2); }
+
+        .input-group { margin: 15px 0; }
+        .input-group input { padding: 10px; width: 100%; border: 1px solid var(--border); border-radius: 6px; font-size: 16px; box-sizing: border-box; }
+
+        .action-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; border-top: 1px solid var(--border); padding-top: 20px; }
+        .btn { padding: 10px 20px; border: none; border-radius: 6px; font-weight: 500; cursor: pointer; transition: 0.2s; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { opacity: 0.9; }
+        .btn-outline { background: white; border: 1px solid var(--border); color: var(--text); }
+        .btn-outline:hover { background: #f1f3f4; }
+        .btn-success { background: var(--success); color: white; }
+        .btn-danger { background: var(--danger); color: white; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .nav-group { display: flex; gap: 10px; }
+
+        .feedback { margin-top: 20px; padding: 15px; border-radius: 6px; display: none; }
+        .feedback.correct { display: block; background: #e6f4ea; border: 1px solid var(--success); }
+        .feedback.wrong { display: block; background: #fce8e6; border: 1px solid var(--danger); }
+        .feedback h4 { margin: 0 0 5px 0; }
+        .feedback .explanation { margin-top: 10px; font-size: 14px; color: #555; }
+
+        .hidden { display: none; }
+        .text-center { text-align: center; }
+        .mt-10 { margin-top: 10px; }
+
+        .jump-nav { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
+        .jump-btn { width: 30px; height: 30px; border-radius: 6px; border: 1px solid var(--border); background: white; cursor: pointer; font-size: 11px; display: flex; align-items: center; justify-content: center; }
+        .jump-btn.done-correct { background: #e6f4ea; border-color: var(--success); }
+        .jump-btn.done-wrong { background: #fce8e6; border-color: var(--danger); }
+        .jump-btn.current { outline: 2px solid var(--primary); }
+
+        .mistakes-bar { display: flex; justify-content: flex-end; margin-bottom: 12px; }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 980; display: flex; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; }
+        .modal-overlay.hidden { display: none; }
+        .modal-box { background: white; border-radius: 12px; padding: 24px; max-width: 720px; width: 100%; max-height: 85vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.3); }
+        .modal-box h3 { margin-top: 0; }
+        .mistakes-summary { font-size: 14px; color: #555; margin-bottom: 14px; }
+        .mistake-item { background: #fce8e6; border: 1px solid var(--danger); border-radius: 8px; padding: 12px 14px; margin-bottom: 10px; font-size: 13px; }
+        .mistake-item .mq { font-weight: 600; margin-bottom: 6px; }
+        .mistake-item .ma { color: #555; }
+        .prompt-textarea { width: 100%; box-sizing: border-box; min-height: 260px; font-family: monospace; font-size: 13px; padding: 12px; border: 1px solid var(--border); border-radius: 8px; margin-top: 14px; }
+        .modal-actions { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
+        .pause-banner { background: #fff3e0; border: 1px solid #f9902b; border-radius: 10px; padding: 16px 18px; margin-bottom: 20px; font-size: 14px; }
+        .pause-banner strong { color: #c96a00; }
+
+        .phrase-progress { font-size: 14px; color: #555; margin-bottom: 14px; }
+        .phrase-card-inner { text-align: center; padding: 10px 0; }
+        .phrase-front { font-size: 20px; font-weight: 600; margin-bottom: 10px; }
+        .phrase-translation { font-size: 14px; color: #666; margin-bottom: 20px; }
+        .phrase-answer { display: none; font-size: 17px; background: #e6f4ea; border: 1px solid var(--success); border-radius: 8px; padding: 14px; margin-bottom: 20px; text-align: left; }
+        .phrase-answer.shown { display: block; }
+        .phrase-type-tag { display: inline-block; font-size: 12px; padding: 3px 10px; border-radius: 12px; background: #f1f3f4; color: #555; margin-bottom: 10px; }
+        .phrase-btn-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+        .phrase-done-msg { text-align: center; padding: 30px 0; }
+
+        .sel-popup { position: absolute; z-index: 999; background: #202124; border-radius: 8px; padding: 6px; display: flex; gap: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+        .sel-popup.hidden { display: none; }
+        .sel-popup button { background: transparent; border: none; color: white; font-size: 15px; padding: 6px 10px; cursor: pointer; border-radius: 4px; }
+        .sel-popup button:hover { background: rgba(255,255,255,0.15); }
+        .selectable { user-select: text; }
+
+        .dict-fab { position: fixed; bottom: 20px; right: 20px; background: var(--primary); color: white; border: none; border-radius: 30px; padding: 12px 18px; font-size: 14px; font-weight: 600; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.25); z-index: 900; }
+        .dict-panel { position: fixed; top: 0; right: 0; height: 100%; width: min(420px, 100%); background: white; box-shadow: -4px 0 20px rgba(0,0,0,0.15); z-index: 950; padding: 20px; box-sizing: border-box; overflow-y: auto; }
+        .dict-panel.hidden { display: none; }
+        .dict-panel h3 { margin-top: 0; }
+        .dict-close { position: absolute; top: 16px; right: 16px; background: none; border: none; font-size: 20px; cursor: pointer; }
+        .dict-empty { color: #888; font-size: 14px; margin-top: 20px; }
+        .dict-list { margin-top: 16px; }
+        .dict-entry { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
+        .dict-entry .w { font-weight: 600; }
+        .dict-entry .t { color: #777; font-size: 13px; }
+        .dict-entry .del { background: none; border: none; color: var(--danger); cursor: pointer; font-size: 13px; }
+        .dict-actions { display: flex; gap: 8px; margin-top: 18px; flex-wrap: wrap; }
+        .dict-print-area { column-count: 3; column-gap: 24px; margin-top: 16px; }
+        .dict-print-area .dp-entry { font-size: 13px; margin-bottom: 6px; break-inside: avoid; }
+
+        @media print {
+            body * { visibility: hidden; }
+            .dict-panel, .dict-panel * { visibility: visible; }
+            .dict-panel { position: absolute; top: 0; left: 0; width: 100%; height: auto; box-shadow: none; }
+            .dict-actions, .dict-close { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2 style="text-align:center; color:var(--primary);">РЕШУ ЦТ и ЦЭ</h2>
+    <h3 style="text-align:center; margin-top:-10px;">Английский язык | Предлоги, фразовые глаголы и сочетаемость</h3>
+
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="test" onclick="switchTab('test')">📝 Тест (56 заданий)</button>
+        <button class="tab-btn" data-tab="phrases" onclick="switchTab('phrases')">🧠 Сочетания на память</button>
+    </div>
+
+    <div id="tab-test" class="tab-panel">
+
+    <details open>
+        <summary>📖 Как устроен этот блок: 4 типа заданий</summary>
+        <div class="theory-intro">Здесь нет единого грамматического правила — это лексика: какое слово или предлог «прилипает» к какому. Такие вещи не выводятся логически, только запоминаются как готовые блоки. Но у заданий есть 4 узнаваемых формата.</div>
+
+        <div class="theory-cards">
+            <div class="theory-card t1">
+                <div class="num">1</div>
+                <div>
+                    <h4>Фиксированный предлог после глагола/прилагательного</h4>
+                    <p>Каждое такое слово «требует» свой предлог, и это не переводится с русского по аналогии. <em>Crazy about</em> (не <span class="wrong-ex">for</span>), <em>capable of</em> (не <span class="wrong-ex">to</span>), <em>pleased with</em> (не <span class="wrong-ex">of</span>), <em>addicted to</em> (не <span class="wrong-ex">with</span>).</p>
+                    <ul class="ex-list selectable">
+                        <li><em>be crazy about</em></li>
+                        <li><em>capable of doing</em></li>
+                        <li><em>have difficulty in doing</em></li>
+                        <li><em>reason for doing</em></li>
+                        <li><em>addicted to</em></li>
+                        <li><em>pleased with yourself</em></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="theory-card t2">
+                <div class="num">2</div>
+                <div>
+                    <h4>Фразовые глаголы</h4>
+                    <p>Глагол + частица образуют новое значение, не выводимое из отдельных слов. Частицу нельзя заменить на "логичную" — только выучить конкретное сочетание.</p>
+                    <ul class="ex-list selectable">
+                        <li><em>carry out</em> (выполнять)</li>
+                        <li><em>give up</em> (бросить)</li>
+                        <li><em>set off</em> (отправиться)</li>
+                        <li><em>try on</em> (примерить)</li>
+                        <li><em>go on</em> (продолжать/отправиться)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="theory-card t3">
+                <div class="num">3</div>
+                <div>
+                    <h4>Одно слово — два разных выражения</h4>
+                    <p>В задании два предложения с разным смыслом, но с одним и тем же пропущенным словом — нужно найти слово, которое подходит в оба сразу. Это проверяет не грамматику, а знание нескольких значений/сочетаний одного слова.</p>
+                    <ul class="ex-list selectable">
+                        <li><em>common sense</em> / <em>make sense</em></li>
+                        <li><em>break a record</em> / <em>take a break</em></li>
+                        <li><em>have in common</em></li>
+                        <li><em>can't stand</em> / <em>stand for</em></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="theory-card t4">
+                <div class="num">4</div>
+                <div>
+                    <h4>Лишнее слово в строке</h4>
+                    <p>Нужно найти слово, которое грамматически или по смыслу избыточно — предложение останется верным и понятным без него. Частые причины: слово дублирует уже выраженный смысл (enough при уже подразумеваемой избыточности), или не сочетается по числу/типу существительного (few + неисчисляемое, each + множественное число).</p>
+                    <ul class="ex-list selectable">
+                        <li><em>wiser <span class="wrong-ex">enough</span></em> → лишнее</li>
+                        <li><em><span class="wrong-ex">few</span> time</em> → нужно little, время неисчисляемо</li>
+                        <li><em><span class="wrong-ex">each</span> top players</em> → players уже во мн. числе</li>
+                        <li><em>one <span class="wrong-ex">another</span> minute</em> → речь о фиксированном интервале</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="theory-card t5">
+                <div class="num">5</div>
+                <div>
+                    <h4>Выбор слова среди близких синонимов</h4>
+                    <p>Все варианты — вроде бы похожие по смыслу слова, но только одно верно встаёт в устойчивое сочетание. <em>Good at</em> (не <span class="wrong-ex">known/keen/eager/aware</span> at), <em>give an impression</em> (не <span class="wrong-ex">get/put/take/follow</span>), <em>take place</em> (не <span class="wrong-ex">seat/space/charge/part</span>).</p>
+                    <ul class="ex-list selectable">
+                        <li><em>good at</em></li>
+                        <li><em>give an impression</em></li>
+                        <li><em>take place</em></li>
+                        <li><em>a wide range</em></li>
+                        <li><em>dream of being able</em></li>
+                        <li><em>make progress</em></li>
+                        <li><em>a respectable figure</em></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="theory-exam-tip">🎯 <strong>Как готовиться:</strong> зубрить отдельные предлоги бесполезно — учите целиком сочетание «слово + предлог/частица» как один блок, лучше в контексте примера-предложения. Именно для этого во вкладке «Сочетания на память» собраны все устойчивые блоки из этого теста.</div>
+    </details>
+
+    <div class="mistakes-bar">
+        <button class="btn btn-outline" onclick="openMistakesModal()">📋 Промпт по ошибкам для ChatGPT</button>
+    </div>
+
+    <div class="pause-banner hidden" id="pause-banner">
+        ⏸️ <strong>Тест приостановлен:</strong> <span id="pause-banner-text"></span> Изучите промпт в открывшемся окне, потом нажмите «Продолжить тест».
+    </div>
+
+    <div class="jump-nav" id="jump-nav"></div>
+
+    <div class="card" id="test-card">
+        <div class="header">
+            <span class="task-id">Задание № <span id="current-id">1</span></span>
+            <span class="score" id="score-display">Решено: 0 / 56</span>
+        </div>
+        <div class="question-text selectable" id="question-text">Загрузка...</div>
+        <div class="options-list" id="options-container"></div>
+        <div class="input-group hidden" id="input-container">
+            <label for="text-answer">Впишите слово:</label>
+            <input type="text" id="text-answer" placeholder="слово" autocomplete="off">
+        </div>
+        <div class="feedback" id="feedback">
+            <h4 id="fb-title"></h4>
+            <div id="fb-explanation" class="explanation"></div>
+        </div>
+        <div class="action-row">
+            <div class="nav-group">
+                <button class="btn btn-outline" onclick="prevTask()" id="prev-btn">← Пред.</button>
+                <button class="btn btn-outline" onclick="nextTask()" id="next-btn">След. →</button>
+            </div>
+            <div>
+                <button class="btn btn-primary" onclick="checkAnswer()" id="check-btn">Проверить</button>
+                <button class="btn btn-outline hidden" onclick="showAnswer()" id="show-btn">Показать ответ</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mt-10" id="complete-msg" style="display:none; color:var(--primary); font-weight:bold; font-size:18px;">
+        🎉 Вы прошли все задания!
+    </div>
+    </div>
+
+    <div id="tab-phrases" class="tab-panel hidden">
+        <div class="card">
+            <p style="margin-top:0; color:#555; font-size:14px;">Устойчивые сочетания из этого блока. Логика тут не помогает — их нужно просто запомнить целиком.</p>
+            <div class="phrase-progress" id="phrase-progress">Осталось повторить: —</div>
+            <div class="phrase-card-inner">
+                <div class="phrase-type-tag" id="phrase-tag">—</div>
+                <div class="phrase-front selectable" id="phrase-front-text">—</div>
+                <div class="phrase-translation" id="phrase-translation">—</div>
+                <div class="phrase-answer selectable" id="phrase-answer-text">—</div>
+                <div class="phrase-btn-row" id="phrase-btn-row-1">
+                    <button class="btn btn-outline" id="phrase-speak-btn">🔊 Прослушать</button>
+                    <button class="btn btn-primary" id="phrase-reveal-btn">Показать ответ</button>
+                </div>
+                <div class="phrase-btn-row hidden" id="phrase-btn-row-2" style="margin-top:14px;">
+                    <button class="btn btn-danger" id="phrase-forgot-btn">😕 Забыл</button>
+                    <button class="btn btn-success" id="phrase-remembered-btn">✅ Помню</button>
+                </div>
+            </div>
+            <div class="phrase-done-msg hidden" id="phrase-done-msg">
+                <p style="font-size:18px; font-weight:600; color:var(--success);">🎉 Все сочетания повторены!</p>
+                <button class="btn btn-outline" onclick="restartPhrases(false)">Повторить только те, что забыл</button>
+                <button class="btn btn-primary" onclick="restartPhrases(true)">Начать заново все</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="modal-overlay hidden" id="mistakes-modal">
+    <div class="modal-box">
+        <h3>📋 Промпт по ошибкам для ChatGPT</h3>
+        <div class="mistakes-summary" id="mistakes-summary">—</div>
+        <div id="mistakes-list"></div>
+        <textarea class="prompt-textarea" id="mistakes-prompt-text" readonly></textarea>
+        <div class="modal-actions">
+            <button class="btn btn-primary" onclick="copyMistakesPrompt()">📋 Скопировать промпт</button>
+            <button class="btn btn-success hidden" id="resume-test-btn" onclick="resumeTest()">▶️ Продолжить тест</button>
+            <button class="btn btn-outline" onclick="closeMistakesModal()">Закрыть</button>
+        </div>
+    </div>
+</div>
+
+<div class="sel-popup hidden" id="sel-popup">
+    <button id="sel-speak-btn" title="Прослушать">🔊</button>
+    <button id="sel-add-btn" title="Добавить в словарь">➕ В словарь</button>
+</div>
+
+<button class="dict-fab" id="dict-fab" onclick="toggleDictPanel(true)">📖 Словарь (<span id="dict-count">0</span>)</button>
+
+<div class="dict-panel hidden" id="dict-panel">
+    <button class="dict-close" onclick="toggleDictPanel(false)">✕</button>
+    <h3>📖 Мой словарь</h3>
+    <div class="dict-empty" id="dict-empty">Пока пусто. Выделите любое слово в тексте выше и нажмите «➕ В словарь».</div>
+    <div class="dict-list" id="dict-list"></div>
+    <div class="dict-actions">
+        <button class="btn btn-primary" onclick="printDict()">🖨️ Печать (3 колонки)</button>
+        <button class="btn btn-outline" onclick="copyDict()">📋 Скопировать</button>
+        <button class="btn btn-outline" onclick="clearDict()">🗑️ Очистить</button>
+    </div>
+    <div class="dict-print-area" id="dict-print-area"></div>
+</div>
+
+<script>
+    const tasks = [
+        { topic: 'prepositions', type: 'input', text: 'She described the whole play to us <span class="blank">___</span> detail.', correct: 'in', explanation: '"In detail" — подробно, в деталях. Устойчивое выражение.' },
+        { topic: 'prepositions', type: 'input', text: 'Both my sons are crazy <span class="blank">___</span> old motorbikes.', correct: 'about', explanation: '"To be crazy about something" — быть без ума от чего-либо.' },
+        { topic: 'prepositions', type: 'input', text: 'The restaurant prides itself <span class="blank">___</span> having the best pizza in town.', correct: 'on', explanation: '"Pride oneself on something" — гордиться чем-либо.' },
+        { topic: 'prepositions', type: 'choice', text: 'He is <span class="blank">___</span> capable of doing this job alone.', options: ['to', 'with', 'in', 'of', '—'], correct: 4, explanation: '"Capable of doing something" — быть способным сделать что-то.' },
+        { topic: 'prepositions', type: 'choice', text: 'Many students have difficulty <span class="blank">___</span> concentrating during exams.', options: ['from', 'at', 'for', 'to', 'in'], correct: 5, explanation: '"Have difficulty in doing something" — иметь трудности в чём-то. Устойчивое выражение.' },
+        { topic: 'prepositions', type: 'choice', text: 'There\'s no reason <span class="blank">___</span> doing it that way.', options: ['for', 'with', 'from', 'in', 'at'], correct: 1, explanation: '"Reason for doing something" — причина сделать что-то. Устойчивое выражение.' },
+        { topic: 'prepositions', type: 'choice', text: 'The team managed to carry <span class="blank">___</span> the plan successfully.', options: ['out', 'off', 'away', 'over', '—'], correct: 1, explanation: '"Carry out" — выполнять. Устойчивое выражение (фразовый глагол).' },
+        { topic: 'prepositions', type: 'choice', text: 'Poor sleep can result <span class="blank">___</span> serious health problems.', options: ['at', 'with', 'by', 'to', 'in'], correct: 5, explanation: '"Result in" — привести к. Устойчивое выражение.' },
+        { topic: 'prepositions', type: 'choice', text: 'Regular exercise can contribute <span class="blank">___</span> better mental health.', options: ['for', 'with', 'at', 'to', 'in'], correct: 4, explanation: '"Contribute (a lot) to" — способствовать чему-либо. Устойчивое выражение.' },
+        { topic: 'prepositions', type: 'choice', text: 'I\'d rather talk about it <span class="blank">___</span> the phone than in person.', options: ['by', 'at', 'in', 'from', 'on'], correct: 5, explanation: '"On the phone" — по телефону. Устойчивое выражение.' },
+        { topic: 'prepositions', type: 'choice', text: 'You should drink <span class="blank">___</span> least two litres of water a day.', options: ['for', 'at', 'of', 'by', 'to'], correct: 2, explanation: '"At least" — по крайней мере. Устойчивое выражение.' },
+        { topic: 'prepositions', type: 'choice', text: 'This old house used to belong <span class="blank">___</span> my grandparents.', options: ['for', 'to', 'about', 'at', '—'], correct: 2, explanation: '"Belong to" — принадлежать кому-либо, чему-либо. Устойчивое выражение.' },
+        { topic: 'prepositions', type: 'choice', text: 'Her new haircut made her popular <span class="blank">___</span> her classmates.', options: ['for', 'to', 'with', 'in', 'of'], correct: 3, explanation: '"Make somebody popular with" — сделать кого-то популярным среди кого-либо.' },
+        { topic: 'prepositions', type: 'choice', text: 'This song always reminds me <span class="blank">___</span> my childhood.', options: ['over', 'of', 'off', 'from', '—'], correct: 2, explanation: '"Remind somebody of something" — напоминать кому-то о чём-то.' },
+        { topic: 'prepositions', type: 'choice', text: 'We sat <span class="blank">___</span> the sun for hours without noticing the time.', options: ['with', 'to', 'on', 'at', 'in'], correct: 5, explanation: '"In the sun" — на солнце.' },
+        { topic: 'prepositions', type: 'choice', text: 'I usually go <span class="blank">___</span> every evening to check my messages.', options: ['to', 'at', 'for', 'out', '—'], correct: 5, explanation: '"Go online" — выходить в интернет.' },
+        { topic: 'prepositions', type: 'choice', text: 'It\'s cheaper if you book <span class="blank">___</span> advance.', options: ['to', 'for', 'by', 'in', 'on'], correct: 4, explanation: '"Book in advance" — бронировать заранее.' },
+        { topic: 'prepositions', type: 'choice', text: 'Teenagers can easily become addicted <span class="blank">___</span> social media.', options: ['with', 'for', 'to', 'in', 'on'], correct: 3, explanation: '"Become addicted to something" — стать зависимым от чего-то.' },
+        { topic: 'prepositions', type: 'choice', text: 'What\'s <span class="blank">___</span> the menu today?', options: ['at', 'on', 'in', 'to', 'with'], correct: 2, explanation: '"On the menu" — в меню.' },
+        { topic: 'prepositions', type: 'choice', text: 'Please limit yourself <span class="blank">___</span> two cups of coffee a day.', options: ['to', 'by', 'with', 'at', 'in'], correct: 1, explanation: '"Limit to something" — ограничивать в чём-либо.' },
+        { topic: 'prepositions', type: 'choice', text: 'Every guest has access <span class="blank">___</span> the swimming pool.', options: ['of', 'to', 'for', 'at', 'in'], correct: 2, explanation: '"Access to" — доступ к чему-либо.' },
+        { topic: 'prepositions', type: 'choice', text: 'The company decided to reward the staff <span class="blank">___</span> their hard work.', options: ['for', 'on', 'with', 'by', 'in'], correct: 1, explanation: '"Reward somebody for something" — награждать кого-то за что-то.' },
+        { topic: 'prepositions', type: 'choice', text: 'He looked very pleased <span class="blank">___</span> himself after the exam.', options: ['at', 'in', 'with', 'of', 'over'], correct: 3, explanation: '"Pleased with yourself" — радоваться, что сделал что-то (доволен собой).' },
+        { topic: 'prepositions', type: 'choice', text: '<span class="blank">___</span> addition, the hotel offers free breakfast.', options: ['On', 'To', 'In', 'With', 'For'], correct: 3, explanation: '"In addition" — кроме того.' },
+        { topic: 'prepositions', type: 'choice', text: 'They decided to go <span class="blank">___</span> a two-week package tour.', options: ['at', 'on', 'over', 'to', 'by'], correct: 2, explanation: '"Go on a two-week package tour" — отправиться в двухнедельный турпакет.' },
+        { topic: 'prepositions', type: 'choice', text: 'This snack is quite low <span class="blank">___</span> vitamins.', options: ['in', 'at', 'with', 'for', 'by'], correct: 1, explanation: '"Be low (high) in vitamins" — быть скудным (богатым) витаминами.' },
+        { topic: 'prepositions', type: 'choice', text: 'He finally decided to give <span class="blank">___</span> smoking.', options: ['in', 'off', 'on', 'out', 'up'], correct: 5, explanation: '"Give up" — бросить, прекратить.' },
+        { topic: 'prepositions', type: 'choice', text: 'The hotel will provide guests <span class="blank">___</span> free Wi-Fi.', options: ['at', 'on', 'to', 'with', 'for'], correct: 4, explanation: '"Provide somebody with something" — предоставлять кому-либо что-либо.' },
+        { topic: 'prepositions', type: 'choice', text: 'She had great success <span class="blank">___</span> her new business.', options: ['in', 'for', 'at', 'with', 'to'], correct: 3, explanation: '"Success at something" — успех в чём-либо.' },
+        { topic: 'prepositions', type: 'choice', text: 'Recently, we\'ve seen a fascinating trend (1) on social media (2) — a series of challenges (3) what involve people (4) doing unusual things (5).', options: ['1', '2', '3', '4', '5'], correct: 4, explanation: 'Устойчивое выражение "involve somebody in doing something" — в предложении пропущен предлог in.' },
+        { topic: 'word_choice', type: 'choice', text: 'Peter has always been <span class="blank">___</span> at drawing.', options: ['known', 'keen', 'eager', 'good', 'aware'], correct: 4, explanation: '"Be good at something" — быть хорошим в чём-то. Устойчивое выражение.' },
+        { topic: 'word_choice', type: 'choice', text: 'Her calm voice managed to <span class="blank">___</span> a good impression on the interviewers.', options: ['get', 'give', 'put', 'take', 'follow'], correct: 2, explanation: '"Give an impression" — создавать впечатление. Устойчивое выражение.' },
+        { topic: 'word_choice', type: 'choice', text: 'After the divorce, he preferred to be on his <span class="blank">___</span> for a while.', options: ['single', 'lonely', 'private', 'alone', 'own'], correct: 5, explanation: '"Be on your own" — быть сам по себе.' },
+        { topic: 'word_choice', type: 'choice', text: 'The ceremony will take <span class="blank">___</span> in the main hall.', options: ['seat', 'place', 'space', 'charge', 'part'], correct: 2, explanation: '"Take place" — происходить где-либо. Фразовое выражение.' },
+        { topic: 'word_choice', type: 'choice', text: 'Within the company, he was seen as a respectable <span class="blank">___</span>.', options: ['figure', 'body', 'status', 'object', 'shape'], correct: 1, explanation: '"A respectable figure" — влиятельная фигура.' },
+        { topic: 'word_choice', type: 'choice', text: 'Luckily, I had a few moments to <span class="blank">___</span> before the meeting started.', options: ['spare', 'keep', 'save', 'hold', 'waste'], correct: 1, explanation: '"A few moments to spare" — несколько минут в запасе.' },
+        { topic: 'word_choice', type: 'choice', text: 'Her cousin always <span class="blank">___</span> her of a famous actress.', options: ['referred', 'recognised', 'recovered', 'reminded', 'remembered'], correct: 4, explanation: 'Лексическая сочетаемость "remind somebody of someone" — напомнить кому-либо о ком-либо.' },
+        { topic: 'word_choice', type: 'choice', text: 'She decided to <span class="blank">___</span> the dress on before buying it.', options: ['keep', 'take', 'dress', 'leave', 'try'], correct: 5, explanation: '"Try something on" — примерить что-то. Устойчивое выражение.' },
+        { topic: 'same_word', type: 'input', text: 'It\'s really important to rely on your common <span class="blank">___</span> in unfamiliar situations.<br>It doesn\'t make <span class="blank">___</span> to buy such an expensive dress when it\'ll be out of fashion next year.', correct: 'sense', explanation: '"Common sense" — здравый смысл; "doesn\'t make sense" — не имеет смысла. Одно слово подходит в оба предложения.' },
+        { topic: 'same_word', type: 'input', text: 'The athlete hopes to <span class="blank">___</span> a record in the upcoming track and field event.<br>It\'s time to take a <span class="blank">___</span> and have a cup of tea in the afternoon.', correct: 'break', explanation: '"Break a record" — побить рекорд; "take a break" — сделать перерыв.' },
+        { topic: 'extra_word', type: 'input', text: '(Строка 3) Though parents may consider themselves wiser enough, do they always know what\'s best?', correct: 'enough', explanation: 'Слово "enough" здесь избыточно — фраза уже подразумевает, что родители считают себя мудрыми, без усиления через "enough".' },
+        { topic: 'extra_word', type: 'input', text: '(Строка 6) Many teenagers get on well with their parents, who find few time to listen to them.', correct: 'few', explanation: 'Слово "few" используется с исчисляемыми существительными, а "time" — неисчисляемое существительное (нужно little).' },
+        { topic: 'same_word', type: 'input', text: 'It\'s <span class="blank">___</span> sense to keep valuable things in a secure place.<br>One of the few things John and Mary have in <span class="blank">___</span> is a love of music.', correct: 'common', explanation: '"Common sense" — здравый смысл; "have in common" — иметь общее.' },
+        { topic: 'same_word', type: 'input', text: 'I can\'t <span class="blank">___</span> when people interrupt me while I\'m speaking.<br>The letters in the abbreviation WWF <span class="blank">___</span> for the World Wildlife Fund.', correct: 'stand', explanation: '"Can\'t stand" — не выносить, терпеть; "stand for" — означать, представлять.' },
+        { topic: 'extra_word', type: 'input', text: '(Строка 3) ...and each top players can earn a lot of money.', correct: 'each', explanation: 'Слово "each" лишнее, так как "players" стоит во множественном числе (each требует единственного числа).' },
+        { topic: 'extra_word', type: 'input', text: '(Строка 6) The average number of moves that an ordinary player can make in one another minute is between 50 and 70.', correct: 'another', explanation: 'Слово "another" неуместно, так как речь идёт о фиксированном временном интервале — одной минуте.' },
+        { topic: 'word_choice', type: 'choice', text: 'The shop offers a <span class="blank">___</span> range of souvenirs.', options: ['wide', 'long', 'high', 'deep', 'exciting'], correct: 1, explanation: '"A wide range" — устойчивое сочетание, означающее «широкий ассортимент, разнообразие».' },
+        { topic: 'word_choice', type: 'choice', text: 'The explorers went in <span class="blank">___</span> of the lost city.', options: ['look', 'search', 'discovery', 'hunt', 'catch'], correct: 2, explanation: '"Go in search of" — устойчивое выражение, означающее «отправиться на поиски чего-либо».' },
+        { topic: 'word_choice', type: 'choice', text: 'Only a <span class="blank">___</span> people showed up for the event.', options: ['number', 'deal', 'amount', 'lot', 'few'], correct: 5, explanation: 'Из всех предложенных вариантов только "a few" может использоваться без предлога "of" перед исчисляемым существительным.' },
+        { topic: 'word_choice', type: 'choice', text: 'She has always <span class="blank">___</span> of being able to travel the world.', options: ['wish', 'want', 'dream', 'expect', 'believe'], correct: 3, explanation: '"Dream of being able" — устойчивое выражение, означающее «мечтать о том, чтобы уметь».' },
+        { topic: 'word_choice', type: 'choice', text: 'His English has really started to <span class="blank">___</span> progress.', options: ['do', 'give', 'succeed', 'make', 'take'], correct: 4, explanation: '"Make progress" — устойчивое сочетание, означающее «делать успехи, развиваться».' },
+        { topic: 'word_choice', type: 'choice', text: 'I\'m very <span class="blank">___</span> with how the project turned out.', options: ['keen', 'satisfied', 'proud', 'fond', 'aware'], correct: 2, explanation: '"Satisfied with" — устойчивое выражение, означающее «довольный чем-либо».' },
+        { topic: 'word_choice', type: 'choice', text: 'The teacher agreed to <span class="blank">___</span> the students with feedback.', options: ['contribute', 'suggest', 'approve', 'recommend', 'provide'], correct: 5, explanation: '"Provide someone with feedback" — предоставить кому-либо обратную связь.' },
+        { topic: 'word_choice', type: 'choice', text: '<span class="blank">___</span> of taking the bus, she decided to walk.', options: ['Instead', 'Except', 'Apart', 'Beside', 'Ahead'], correct: 1, explanation: '"Instead of" — вместо чего-либо.' },
+        { topic: 'word_choice', type: 'choice', text: 'They decided to <span class="blank">___</span> off early to avoid the traffic.', options: ['aimed', 'put', 'set', 'spent', 'focused'], correct: 3, explanation: '"Set off" — отправиться в путь. Фразовый глагол.' },
+        { topic: 'word_choice', type: 'choice', text: 'It\'s important to make <span class="blank">___</span> gradually rather than rush things.', options: ['decision', 'business', 'research', 'work', 'progress'], correct: 5, explanation: '"To make progress" — устойчивое выражение, делать успехи постепенно.' }
+    ];
+
+    let currentIdx = 0;
+    let answered = new Array(tasks.length).fill(false);
+    let wasCorrect = new Array(tasks.length).fill(null);
+    let userAnswersLog = new Array(tasks.length).fill(null);
+    let userAnswer = null;
+
+    const scoreEl = document.getElementById('score-display');
+    const questionText = document.getElementById('question-text');
+    const optionsContainer = document.getElementById('options-container');
+    const inputContainer = document.getElementById('input-container');
+    const textAnswer = document.getElementById('text-answer');
+    const feedbackEl = document.getElementById('feedback');
+    const fbTitle = document.getElementById('fb-title');
+    const fbExplanation = document.getElementById('fb-explanation');
+    const checkBtn = document.getElementById('check-btn');
+    const showBtn = document.getElementById('show-btn');
+    const completeMsg = document.getElementById('complete-msg');
+    const jumpNav = document.getElementById('jump-nav');
+    const taskIdEl = document.getElementById('current-id');
+
+    function buildJumpNav() {
+        jumpNav.innerHTML = '';
+        tasks.forEach((t, idx) => {
+            const btn = document.createElement('button');
+            btn.className = 'jump-btn';
+            btn.textContent = idx + 1;
+            btn.id = 'jump-' + idx;
+            btn.onclick = () => { currentIdx = idx; renderTask(); };
+            jumpNav.appendChild(btn);
+        });
+        updateJumpNav();
+    }
+
+    function updateJumpNav() {
+        tasks.forEach((t, idx) => {
+            const btn = document.getElementById('jump-' + idx);
+            btn.classList.remove('done-correct', 'done-wrong', 'current');
+            if (answered[idx]) btn.classList.add(wasCorrect[idx] ? 'done-correct' : 'done-wrong');
+            if (idx === currentIdx) btn.classList.add('current');
+        });
+    }
+
+    function renderTask() {
+        const task = tasks[currentIdx];
+        taskIdEl.textContent = currentIdx + 1;
+        questionText.innerHTML = task.text;
+        feedbackEl.className = 'feedback';
+        feedbackEl.style.display = 'none';
+        checkBtn.disabled = false;
+        checkBtn.textContent = 'Проверить';
+        showBtn.classList.add('hidden');
+        textAnswer.value = '';
+        completeMsg.style.display = 'none';
+
+        const solved = answered.filter(a => a === true).length;
+        scoreEl.textContent = `Решено: ${solved} / ${tasks.length}`;
+
+        if (task.type === 'choice') {
+            optionsContainer.classList.remove('hidden');
+            inputContainer.classList.add('hidden');
+            optionsContainer.innerHTML = '';
+            task.options.forEach((opt, index) => {
+                const label = document.createElement('label');
+                label.className = 'option-item';
+                const radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.name = 'q-option';
+                radio.value = index + 1;
+                label.appendChild(radio);
+                const span = document.createElement('span');
+                span.textContent = `${index + 1}) ${opt}`;
+                label.appendChild(span);
+                label.onclick = () => selectOption(label, index + 1);
+                optionsContainer.appendChild(label);
+            });
+            userAnswer = null;
+        } else {
+            optionsContainer.classList.add('hidden');
+            inputContainer.classList.remove('hidden');
+            textAnswer.focus();
+            userAnswer = null;
+        }
+
+        if (answered[currentIdx]) {
+            checkBtn.disabled = true;
+            checkBtn.textContent = 'Проверено';
+            showBtn.classList.remove('hidden');
+            if (task.type === 'choice') {
+                const allLabels = optionsContainer.querySelectorAll('.option-item');
+                allLabels.forEach((l, idx) => {
+                    l.classList.add((idx + 1) === task.correct ? 'correct' : 'wrong');
+                    l.style.pointerEvents = 'none';
+                    l.querySelector('input').disabled = true;
+                });
+            } else {
+                textAnswer.disabled = true;
+            }
+            showFeedback(wasCorrect[currentIdx], task.correct, task.explanation);
+        }
+        updateJumpNav();
+    }
+
+    function selectOption(label, value) {
+        if (answered[currentIdx]) return;
+        const allLabels = optionsContainer.querySelectorAll('.option-item');
+        allLabels.forEach(l => l.classList.remove('selected'));
+        label.classList.add('selected');
+        userAnswer = value;
+    }
+
+    function checkAnswer() {
+        if (answered[currentIdx]) return;
+        const task = tasks[currentIdx];
+        let isCorrect = false;
+
+        if (task.type === 'choice') {
+            if (userAnswer === null) { alert('Пожалуйста, выберите вариант ответа!'); return; }
+            isCorrect = userAnswer === task.correct;
+        } else {
+            const val = textAnswer.value.trim().toLowerCase();
+            if (!val) { alert('Пожалуйста, введите слово!'); return; }
+            isCorrect = val === task.correct.toLowerCase();
+        }
+
+        answered[currentIdx] = true;
+        wasCorrect[currentIdx] = isCorrect;
+        userAnswersLog[currentIdx] = task.type === 'choice' ? task.options[userAnswer - 1] : textAnswer.value.trim();
+
+        if (task.type === 'choice') {
+            const allLabels = optionsContainer.querySelectorAll('.option-item');
+            allLabels.forEach((l, idx) => {
+                l.style.pointerEvents = 'none';
+                l.querySelector('input').disabled = true;
+                if ((idx + 1) === task.correct) l.classList.add('correct');
+                else if ((idx + 1) === userAnswer) l.classList.add('wrong');
+            });
+        } else {
+            textAnswer.disabled = true;
+        }
+
+        checkBtn.disabled = true;
+        checkBtn.textContent = 'Проверено';
+        showBtn.classList.remove('hidden');
+        showFeedback(isCorrect, task.correct, task.explanation);
+        scoreEl.textContent = `Решено: ${answered.filter(a => a).length} / ${tasks.length}`;
+        updateJumpNav();
+        if (answered.every(a => a)) completeMsg.style.display = 'block';
+        if (!isCorrect) registerMistakeForTopic(task.topic);
+    }
+
+    function showAnswer() {
+        const task = tasks[currentIdx];
+        alert(task.type === 'input' ? `Правильное слово: ${task.correct}` : `Правильный ответ: ${task.correct}) ${task.options[task.correct - 1]}`);
+    }
+
+    function showFeedback(isCorrect, correctVal, explanation) {
+        feedbackEl.style.display = 'block';
+        feedbackEl.className = 'feedback ' + (isCorrect ? 'correct' : 'wrong');
+        fbTitle.textContent = isCorrect ? '✅ Верно!' : '❌ Неправильно';
+        fbExplanation.innerHTML = `<strong>Пояснение:</strong> ${explanation}`;
+    }
+
+    function prevTask() { if (currentIdx > 0) { currentIdx--; renderTask(); } }
+    function nextTask() { if (currentIdx < tasks.length - 1) { currentIdx++; renderTask(); } }
+
+    buildJumpNav();
+    renderTask();
+
+    function switchTab(name) {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === name));
+        document.getElementById('tab-test').classList.toggle('hidden', name !== 'test');
+        document.getElementById('tab-phrases').classList.toggle('hidden', name !== 'phrases');
+    }
+
+    /* ============ MISTAKE COUNTING BY TOPIC + AUTO-PAUSE ============ */
+    const topicLabels = {
+        prepositions: 'Фиксированные предлоги и фразовые глаголы',
+        word_choice: 'Выбор слова среди синонимов',
+        same_word: 'Одно слово — два значения',
+        extra_word: 'Лишнее слово в строке'
+    };
+    let mistakeCountByTopic = {};
+    let pausedForTopic = null;
+
+    function registerMistakeForTopic(topic) {
+        if (!topic) return;
+        mistakeCountByTopic[topic] = (mistakeCountByTopic[topic] || 0) + 1;
+        if (mistakeCountByTopic[topic] % 2 === 0) {
+            pauseTestForTopic(topic);
+        }
+    }
+
+    function pauseTestForTopic(topic) {
+        pausedForTopic = topic;
+        document.getElementById('test-card').classList.add('hidden');
+        const banner = document.getElementById('pause-banner');
+        banner.classList.remove('hidden');
+        document.getElementById('pause-banner-text').textContent =
+            `у вас уже ${mistakeCountByTopic[topic]} ошибки по теме «${topicLabels[topic] || topic}».`;
+        openMistakesModal(topic);
+    }
+
+    function resumeTest() {
+        pausedForTopic = null;
+        document.getElementById('test-card').classList.remove('hidden');
+        document.getElementById('pause-banner').classList.add('hidden');
+        closeMistakesModal();
+    }
+
+    /* ============ MISTAKES → CHATGPT PROMPT ============ */
+    function stripHtml(html) {
+        const tmp = document.createElement('div');
+        tmp.innerHTML = html.replace(/<span class="blank">___<\/span>/g, '___').replace(/<br>/g, ' / ');
+        return tmp.textContent.replace(/\s+/g, ' ').trim();
+    }
+
+    function collectMistakes(topicFilter) {
+        const list = [];
+        tasks.forEach((task, idx) => {
+            if (answered[idx] && !wasCorrect[idx] && (!topicFilter || task.topic === topicFilter)) {
+                const correctText = task.type === 'choice' ? task.options[task.correct - 1] : task.correct;
+                list.push({
+                    n: idx + 1,
+                    topic: task.topic,
+                    question: stripHtml(task.text),
+                    userAnswer: userAnswersLog[idx] || '(не сохранено)',
+                    correct: correctText,
+                    explanation: task.explanation
+                });
+            }
+        });
+        return list;
+    }
+
+    function buildMistakesPrompt(mistakes, topicFilter) {
+        const topic = topicFilter
+            ? `«${topicLabels[topicFilter] || topicFilter}» (английский язык, подготовка к ЦТ/ЦЭ)`
+            : 'Предлоги, фразовые глаголы и лексическая сочетаемость, английский язык, подготовка к ЦТ/ЦЭ';
+        let header = `Я готовлюсь к централизованному тестированию (ЦТ) по английскому языку. `
+            + `Прошёл тренажёр по теме ${topic} и ошибся в ${mistakes.length} задании(ях).\n\n`
+            + `Прошу тебя позаниматься со мной по каждой ошибке ниже по следующей методике, ОДНА ошибка за раз, не переходя к следующей, пока не закреплена текущая:\n`
+            + `1. Кратко объясни, почему именно это слово/предлог верное — без общих правил, а именно как устойчивое сочетание, которое нужно запомнить целиком.\n`
+            + `2. Проговори (напиши полностью, как для чтения вслух и повторения) правильный вариант фразы или конструкции целиком, чтобы я мог прослушать её и повторить вслух.\n`
+            + `3. Только после этого дай мне 2-3 новых коротких упражнения на именно это конкретное сочетание (не на всю тему сразу), похожих по формату на исходное задание, с ответами в конце.\n\n`
+            + `Вот мои ошибки:\n\n`;
+
+        let body = mistakes.map((m, i) =>
+            `${i + 1}) Задание: ${m.question}\n`
+            + `Мой ответ: ${m.userAnswer}\n`
+            + `Правильный ответ: ${m.correct}\n`
+            + `Пояснение из тренажёра: ${m.explanation}\n`
+        ).join('\n');
+
+        return header + body;
+    }
+
+    function openMistakesModal(topicFilter) {
+        const mistakes = collectMistakes(topicFilter);
+        const summaryEl = document.getElementById('mistakes-summary');
+        const listEl = document.getElementById('mistakes-list');
+        const promptEl = document.getElementById('mistakes-prompt-text');
+        const resumeBtn = document.getElementById('resume-test-btn');
+
+        resumeBtn.classList.toggle('hidden', !topicFilter);
+
+        if (mistakes.length === 0) {
+            summaryEl.textContent = 'Пока нет ни одной зафиксированной ошибки (либо задания ещё не пройдены, либо все решены верно).';
+            listEl.innerHTML = '';
+            promptEl.value = '';
+        } else {
+            summaryEl.textContent = topicFilter
+                ? `Тема «${topicLabels[topicFilter] || topicFilter}»: ${mistakes.length} ошибка(ок).`
+                : `Найдено ${mistakes.length} ошибка(ок) из ${answered.filter(a => a).length} пройденных заданий.`;
+            listEl.innerHTML = mistakes.map(m =>
+                `<div class="mistake-item"><div class="mq">№${m.n}: ${m.question}</div><div class="ma">Ваш ответ: ${m.userAnswer} → Правильно: ${m.correct}</div></div>`
+            ).join('');
+            promptEl.value = buildMistakesPrompt(mistakes, topicFilter);
+        }
+        document.getElementById('mistakes-modal').classList.remove('hidden');
+    }
+
+    function closeMistakesModal() {
+        document.getElementById('mistakes-modal').classList.add('hidden');
+    }
+
+    function copyMistakesPrompt() {
+        const promptEl = document.getElementById('mistakes-prompt-text');
+        if (!promptEl.value) { alert('Промпт пуст — сначала пройдите задания.'); return; }
+        promptEl.select();
+        try {
+            navigator.clipboard.writeText(promptEl.value).then(() => alert('Промпт скопирован! Вставьте его в ChatGPT.'));
+        } catch (err) {
+            document.execCommand('copy');
+            alert('Промпт скопирован! Вставьте его в ChatGPT.');
+        }
+    }
+
+    /* ============ PHRASE MEMORY TRAINER ============ */
+    const phrasesData = [
+        { front: 'in ___ detail', answer: 'in detail', translation: 'подробно, в деталях', tag: 'предлог' },
+        { front: 'be crazy ___', answer: 'be crazy about', translation: 'быть без ума от', tag: 'предлог' },
+        { front: 'pride oneself ___', answer: 'pride oneself on', translation: 'гордиться собой за что-то', tag: 'предлог' },
+        { front: 'capable ___ doing', answer: 'capable of doing', translation: 'способный сделать', tag: 'предлог' },
+        { front: 'have difficulty ___ doing', answer: 'have difficulty in doing', translation: 'испытывать трудности с чем-то', tag: 'предлог' },
+        { front: 'reason ___ doing', answer: 'reason for doing', translation: 'причина сделать что-то', tag: 'предлог' },
+        { front: 'carry ___', answer: 'carry out', translation: 'выполнять', tag: 'фразовый глагол' },
+        { front: 'result ___', answer: 'result in', translation: 'привести к', tag: 'предлог' },
+        { front: 'contribute ___', answer: 'contribute to', translation: 'способствовать', tag: 'предлог' },
+        { front: '___ the phone', answer: 'on the phone', translation: 'по телефону', tag: 'предлог' },
+        { front: 'at ___', answer: 'at least', translation: 'по крайней мере', tag: 'предлог' },
+        { front: 'belong ___', answer: 'belong to', translation: 'принадлежать', tag: 'предлог' },
+        { front: 'remind somebody ___', answer: 'remind somebody of', translation: 'напоминать кому-то о чём-то', tag: 'предлог' },
+        { front: '___ the sun', answer: 'in the sun', translation: 'на солнце', tag: 'предлог' },
+        { front: 'go ___', answer: 'go online', translation: 'выходить в интернет', tag: 'предлог' },
+        { front: 'book ___ advance', answer: 'book in advance', translation: 'бронировать заранее', tag: 'предлог' },
+        { front: 'addicted ___', answer: 'addicted to', translation: 'зависимый от чего-либо', tag: 'предлог' },
+        { front: '___ the menu', answer: 'on the menu', translation: 'в меню', tag: 'предлог' },
+        { front: 'limit ___', answer: 'limit to', translation: 'ограничивать в чём-либо', tag: 'предлог' },
+        { front: 'access ___', answer: 'access to', translation: 'доступ к чему-либо', tag: 'предлог' },
+        { front: 'reward somebody ___', answer: 'reward somebody for', translation: 'награждать за что-то', tag: 'предлог' },
+        { front: 'pleased ___ yourself', answer: 'pleased with yourself', translation: 'довольный собой', tag: 'предлог' },
+        { front: '___ addition', answer: 'in addition', translation: 'кроме того', tag: 'предлог' },
+        { front: 'give ___', answer: 'give up', translation: 'бросить, прекратить', tag: 'фразовый глагол' },
+        { front: 'provide somebody ___', answer: 'provide somebody with', translation: 'обеспечивать кого-то чем-либо', tag: 'предлог' },
+        { front: 'success ___', answer: 'success at', translation: 'успех в чём-либо', tag: 'предлог' },
+        { front: 'common ___ / make ___', answer: 'common sense / make sense', translation: 'здравый смысл / иметь смысл', tag: 'одно слово — 2 значения' },
+        { front: 'break a ___ / take a ___', answer: 'break a record / take a break', translation: 'побить рекорд / сделать перерыв', tag: 'одно слово — 2 значения' },
+        { front: 'have in ___', answer: 'have in common', translation: 'иметь общее', tag: 'сочетание' },
+        { front: 'can\'t ___ / ___ for', answer: 'can\'t stand / stand for', translation: 'не выносить / означать', tag: 'одно слово — 2 значения' },
+        { front: 'a wide ___ of', answer: 'a wide range of', translation: 'широкий ассортимент, разнообразие', tag: 'выбор слова' },
+        { front: 'go in ___ of', answer: 'go in search of', translation: 'отправиться на поиски', tag: 'выбор слова' },
+        { front: 'dream ___ being able', answer: 'dream of being able', translation: 'мечтать о том, чтобы уметь', tag: 'предлог' },
+        { front: 'make ___', answer: 'make progress', translation: 'делать успехи, развиваться', tag: 'выбор слова' },
+        { front: 'give an ___', answer: 'give an impression', translation: 'производить впечатление', tag: 'выбор слова' },
+        { front: 'take ___', answer: 'take place', translation: 'происходить где-либо', tag: 'выбор слова' },
+        { front: 'try something ___', answer: 'try something on', translation: 'примерить что-то', tag: 'фразовый глагол' },
+        { front: 'set ___', answer: 'set off', translation: 'отправиться в путь', tag: 'фразовый глагол' },
+        { front: 'be ___ your own', answer: 'be on your own', translation: 'быть сам по себе', tag: 'предлог' }
+    ];
+
+    let phraseDeck = [];
+    let forgottenSet = new Set();
+    let currentPhrase = null;
+
+    const phraseProgressEl = document.getElementById('phrase-progress');
+    const phraseTagEl = document.getElementById('phrase-tag');
+    const phraseFrontEl = document.getElementById('phrase-front-text');
+    const phraseTranslationEl = document.getElementById('phrase-translation');
+    const phraseAnswerEl = document.getElementById('phrase-answer-text');
+    const phraseBtnRow1 = document.getElementById('phrase-btn-row-1');
+    const phraseBtnRow2 = document.getElementById('phrase-btn-row-2');
+    const phraseDoneMsg = document.getElementById('phrase-done-msg');
+
+    function shuffleArr(arr) {
+        const a = arr.slice();
+        for (let i = a.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+    }
+
+    function initPhraseDeck() {
+        phraseDeck = shuffleArr(phrasesData.map((p, i) => i));
+        forgottenSet = new Set();
+        renderPhrase();
+    }
+
+    function renderPhrase() {
+        if (phraseDeck.length === 0) {
+            document.querySelector('.phrase-card-inner').classList.add('hidden');
+            phraseDoneMsg.classList.remove('hidden');
+            phraseProgressEl.textContent = 'Осталось повторить: 0';
+            return;
+        }
+        document.querySelector('.phrase-card-inner').classList.remove('hidden');
+        phraseDoneMsg.classList.add('hidden');
+        const idx = phraseDeck[0];
+        currentPhrase = phrasesData[idx];
+        phraseProgressEl.textContent = `Осталось повторить: ${phraseDeck.length}`;
+        phraseTagEl.textContent = currentPhrase.tag;
+        phraseFrontEl.textContent = currentPhrase.front;
+        phraseTranslationEl.textContent = currentPhrase.translation;
+        phraseAnswerEl.textContent = currentPhrase.answer;
+        phraseAnswerEl.classList.remove('shown');
+        phraseBtnRow1.classList.remove('hidden');
+        phraseBtnRow2.classList.add('hidden');
+    }
+
+    document.getElementById('phrase-reveal-btn').addEventListener('click', function () {
+        phraseAnswerEl.classList.add('shown');
+        phraseBtnRow1.classList.add('hidden');
+        phraseBtnRow2.classList.remove('hidden');
+    });
+
+    document.getElementById('phrase-speak-btn').addEventListener('click', function () {
+        if (!currentPhrase) return;
+        window.speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(currentPhrase.answer.replace(/[\/]/g, ' or '));
+        u.lang = 'en-US';
+        window.speechSynthesis.speak(u);
+    });
+
+    document.getElementById('phrase-remembered-btn').addEventListener('click', function () {
+        phraseDeck.shift();
+        renderPhrase();
+    });
+
+    document.getElementById('phrase-forgot-btn').addEventListener('click', function () {
+        const idx = phraseDeck.shift();
+        forgottenSet.add(idx);
+        phraseDeck.push(idx);
+        renderPhrase();
+    });
+
+    function restartPhrases(all) {
+        if (all) { initPhraseDeck(); return; }
+        phraseDeck = shuffleArr(Array.from(forgottenSet));
+        if (phraseDeck.length === 0) { initPhraseDeck(); return; }
+        forgottenSet = new Set();
+        renderPhrase();
+    }
+
+    initPhraseDeck();
+
+    /* ============ WORD SELECTION: LISTEN + ADD TO DICTIONARY ============ */
+    const selPopup = document.getElementById('sel-popup');
+    let pendingSelectionText = '';
+
+    document.addEventListener('mouseup', function (e) {
+        if (selPopup.contains(e.target)) return;
+        setTimeout(() => {
+            const sel = window.getSelection();
+            const text = sel.toString().trim();
+            if (!text || sel.rangeCount === 0) { selPopup.classList.add('hidden'); return; }
+            const anchor = sel.anchorNode;
+            const container = anchor && anchor.nodeType === 3 ? anchor.parentElement : anchor;
+            if (!container || !container.closest('.selectable')) { selPopup.classList.add('hidden'); return; }
+            const cleaned = text.replace(/[^a-zA-Z\s'-]/g, '').trim();
+            if (!cleaned) { selPopup.classList.add('hidden'); return; }
+            pendingSelectionText = cleaned;
+            const range = sel.getRangeAt(0);
+            const rect = range.getBoundingClientRect();
+            selPopup.style.top = (window.scrollY + rect.top - 44) + 'px';
+            selPopup.style.left = (window.scrollX + rect.left) + 'px';
+            selPopup.classList.remove('hidden');
+        }, 10);
+    });
+
+    document.getElementById('sel-speak-btn').addEventListener('click', function () {
+        if (!pendingSelectionText) return;
+        window.speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(pendingSelectionText);
+        u.lang = 'en-US';
+        window.speechSynthesis.speak(u);
+    });
+
+    document.getElementById('sel-add-btn').addEventListener('click', function () {
+        if (!pendingSelectionText) return;
+        addToDictionary(pendingSelectionText);
+        selPopup.classList.add('hidden');
+    });
+
+    /* ============ DICTIONARY ============ */
+    let dictionary = [];
+
+    function toggleDictPanel(show) {
+        document.getElementById('dict-panel').classList.toggle('hidden', !show);
+    }
+
+    async function addToDictionary(word) {
+        const key = word.toLowerCase();
+        if (dictionary.some(d => d.word.toLowerCase() === key)) return;
+        const entry = { word: word, transcription: '—' };
+        dictionary.push(entry);
+        renderDict();
+        if (!/\s/.test(word)) {
+            try {
+                const res = await fetch('https://api.dictionaryapi.dev/api/v2/entries/en/' + encodeURIComponent(key));
+                if (res.ok) {
+                    const data = await res.json();
+                    const ph = data[0] && (data[0].phonetic || (data[0].phonetics && data[0].phonetics.find(p => p.text) && data[0].phonetics.find(p => p.text).text));
+                    if (ph) { entry.transcription = ph; renderDict(); }
+                }
+            } catch (err) { /* offline — leave as — */ }
+        }
+    }
+
+    function renderDict() {
+        document.getElementById('dict-count').textContent = dictionary.length;
+        const listEl = document.getElementById('dict-list');
+        const emptyEl = document.getElementById('dict-empty');
+        const printArea = document.getElementById('dict-print-area');
+        emptyEl.style.display = dictionary.length ? 'none' : 'block';
+        listEl.innerHTML = '';
+        printArea.innerHTML = '';
+        dictionary.forEach((d, i) => {
+            const row = document.createElement('div');
+            row.className = 'dict-entry';
+            row.innerHTML = `<span><span class="w">${d.word}</span> <span class="t">${d.transcription}</span></span>`;
+            const delBtn = document.createElement('button');
+            delBtn.className = 'del';
+            delBtn.textContent = 'убрать';
+            delBtn.onclick = () => { dictionary.splice(i, 1); renderDict(); };
+            row.appendChild(delBtn);
+            listEl.appendChild(row);
+
+            const pRow = document.createElement('div');
+            pRow.className = 'dp-entry';
+            pRow.textContent = `${d.word} — ${d.transcription}`;
+            printArea.appendChild(pRow);
+        });
+    }
+
+    function clearDict() {
+        if (dictionary.length && confirm('Очистить весь словарь?')) { dictionary = []; renderDict(); }
+    }
+
+    function printDict() {
+        if (!dictionary.length) { alert('Словарь пуст.'); return; }
+        toggleDictPanel(true);
+        setTimeout(() => window.print(), 50);
+    }
+
+    function copyDict() {
+        if (!dictionary.length) { alert('Словарь пуст.'); return; }
+        const n = Math.ceil(dictionary.length / 3);
+        const col1 = dictionary.slice(0, n);
+        const col2 = dictionary.slice(n, 2 * n);
+        const col3 = dictionary.slice(2 * n);
+        let lines = [];
+        for (let i = 0; i < n; i++) {
+            const a = col1[i] ? `${col1[i].word} — ${col1[i].transcription}` : '';
+            const b = col2[i] ? `${col2[i].word} — ${col2[i].transcription}` : '';
+            const c = col3[i] ? `${col3[i].word} — ${col3[i].transcription}` : '';
+            lines.push([a, b, c].join('\t'));
+        }
+        const text = lines.join('\n');
+        try {
+            navigator.clipboard.writeText(text).then(() => alert('Скопировано в буфер обмена!'));
+        } catch (err) {
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+            alert('Скопировано в буфер обмена!');
+        }
+    }
+
+    renderDict();
+</script>
+</body>
+</html>

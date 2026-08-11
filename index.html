@@ -1,982 +1,133 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Тренажёр: Артикль (ЦТ/ЦЭ)</title>
-    <style>
-        :root {
-            --primary: #1a73e8;
-            --bg: #f8f9fa;
-            --card: #ffffff;
-            --text: #202124;
-            --success: #34a853;
-            --danger: #ea4335;
-            --border: #dadce0;
-        }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 20px; line-height: 1.6; }
-        .container { max-width: 800px; margin: 0 auto; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Подготовка к ЦТ по английскому языку</title>
+<style>
+    :root {
+        --primary: #1a73e8; --bg: #f8f9fa; --card: #ffffff; --text: #202124;
+        --success: #34a853; --danger: #ea4335; --border: #dadce0;
+    }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 20px; line-height: 1.6; }
+    .container { max-width: 860px; margin: 0 auto; }
+    h1 { text-align: center; color: var(--primary); font-size: 28px; margin-bottom: 4px; }
+    .subtitle { text-align: center; color: #666; font-size: 15px; margin-bottom: 30px; }
 
-        .tabs { display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; }
-        .tab-btn { flex: 1; min-width: 140px; padding: 12px; border: 1px solid var(--border); background: white; border-radius: 8px; cursor: pointer; font-weight: 500; font-size: 14px; }
-        .tab-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
-        .tab-panel.hidden { display: none; }
+    .card { background: var(--card); border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); padding: 26px 30px; margin-bottom: 22px; }
+    .card h2 { margin-top: 0; font-size: 19px; color: var(--primary); }
 
-        details { background: var(--card); padding: 15px 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px; border-left: 4px solid var(--primary); }
-        summary { font-weight: bold; color: var(--primary); cursor: pointer; }
-        .rules-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
-        @media (max-width: 600px) { .rules-grid { grid-template-columns: 1fr; } }
-        .rule-item { background: #f1f3f4; padding: 10px; border-radius: 4px; font-size: 14px; }
-        .rule-item strong { color: var(--primary); }
-        .theory-intro { font-size: 15px; margin-bottom: 20px; color: #444; text-align: justify; }
-        .theory-cards { display: flex; flex-direction: column; gap: 14px; margin-bottom: 20px; }
-        .theory-card { display: grid; grid-template-columns: 56px 1fr; gap: 16px; padding: 16px 18px; border-radius: 10px; background: #fafbfc; border: 1px solid var(--border); border-left-width: 5px; }
-        .theory-card .num { display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: bold; color: white; border-radius: 8px; height: 40px; align-self: start; }
-        .theory-card h4 { margin: 0 0 6px 0; font-size: 15px; }
-        .theory-card p { margin: 0 0 8px 0; font-size: 14px; color: #333; }
-        .theory-card .ex { font-size: 13px; background: white; border: 1px dashed var(--border); border-radius: 6px; padding: 8px 10px; }
-        .theory-card .ex em { color: #444; }
-        .ex-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
-        .ex-list li { background: white; border: 1px dashed var(--border); border-radius: 6px; padding: 8px 10px; font-size: 13px; }
-        .ex-list li::before { content: "→ "; color: var(--primary); font-weight: bold; }
-        .ex-list li em { color: #444; font-style: normal; font-weight: 600; }
-        .wrong-ex { color: var(--danger); text-decoration: line-through; text-decoration-thickness: 2px; font-weight: 600; }
-        .theory-card.type-a { border-left-color: #1a73e8; }
-        .theory-card.type-a .num { background: #1a73e8; }
-        .theory-card.type-the { border-left-color: #34a853; }
-        .theory-card.type-the .num { background: #34a853; }
-        .theory-card.type-zero { border-left-color: #9c27b0; }
-        .theory-card.type-zero .num { background: #9c27b0; }
-        .theory-card.type-geo { border-left-color: #f9902b; }
-        .theory-card.type-geo .num { background: #f9902b; }
-        .theory-card.type-comp { border-left-color: #ea4335; }
-        .theory-card.type-comp .num { background: #ea4335; }
-        .theory-exam-tip { background: #e8f0fe; border: 1px solid var(--primary); border-radius: 10px; padding: 14px 18px; font-size: 14px; margin-bottom: 20px; }
-        .theory-exam-tip strong { color: var(--primary); }
+    .fact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px; }
+    @media (max-width: 600px) { .fact-grid { grid-template-columns: 1fr; } }
+    .fact-item { background: #f1f3f4; border-radius: 8px; padding: 12px 14px; font-size: 14px; }
+    .fact-item strong { display: block; color: var(--primary); font-size: 13px; margin-bottom: 4px; }
 
-        .card { background: var(--card); border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); padding: 30px; margin-bottom: 20px; }
-        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-bottom: 20px; }
-        .task-id { font-weight: bold; color: var(--primary); }
-        .score { font-size: 14px; padding: 5px 12px; border: 1px solid var(--border); border-radius: 20px; }
+    .structure-row { display: flex; gap: 14px; margin-top: 14px; flex-wrap: wrap; }
+    .structure-box { flex: 1; min-width: 220px; border: 1px solid var(--border); border-radius: 10px; padding: 16px; background: #fafbfc; }
+    .structure-box h4 { margin: 0 0 8px 0; color: var(--primary); font-size: 15px; }
+    .structure-box p { margin: 0; font-size: 14px; color: #444; }
+    .structure-box .num { font-size: 26px; font-weight: bold; color: var(--text); }
 
-        .question-text { font-size: 16px; margin-bottom: 25px; text-align: justify; }
-        .blank { display: inline-block; min-width: 30px; border-bottom: 2px solid var(--primary); color: var(--primary); font-weight: bold; padding: 0 5px; text-decoration: underline; text-underline-offset: 4px; }
+    .note-box { background: #fff3e0; border: 1px solid #f9902b; border-radius: 10px; padding: 14px 18px; font-size: 14px; margin-top: 16px; }
+    .note-box strong { color: #c96a00; }
 
-        .options-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 25px; }
-        .option-item { padding: 12px 16px; border: 1px solid var(--border); border-radius: 8px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 10px; }
-        .option-item:hover { background: #f1f3f4; }
-        .option-item.selected { border-color: var(--primary); background: #e8f0fe; }
-        .option-item.correct { border-color: var(--success); background: #e6f4ea; }
-        .option-item.wrong { border-color: var(--danger); background: #fce8e6; }
-        .option-item input[type="radio"] { accent-color: var(--primary); transform: scale(1.2); }
+    .trainer-grid { display: flex; flex-direction: column; gap: 14px; margin-top: 10px; }
+    .trainer-link { display: grid; grid-template-columns: 56px 1fr auto; gap: 16px; align-items: center; padding: 18px 20px; border-radius: 12px; background: var(--card); border: 1px solid var(--border); text-decoration: none; color: var(--text); transition: 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.03); }
+    .trainer-link:hover { border-color: var(--primary); box-shadow: 0 4px 10px rgba(26,115,232,0.15); transform: translateY(-1px); }
+    .trainer-icon { width: 48px; height: 48px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 24px; color: white; }
+    .trainer-icon.c1 { background: #1a73e8; }
+    .trainer-icon.c2 { background: #34a853; }
+    .trainer-icon.c3 { background: #9c27b0; }
+    .trainer-title { font-weight: 600; font-size: 16px; margin-bottom: 4px; }
+    .trainer-desc { font-size: 13px; color: #666; }
+    .trainer-count { font-size: 13px; color: var(--primary); font-weight: 600; white-space: nowrap; }
 
-        .input-group { margin: 15px 0; }
-        .input-group input { padding: 10px; width: 100%; border: 1px solid var(--border); border-radius: 6px; font-size: 16px; box-sizing: border-box; }
-
-        .action-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; border-top: 1px solid var(--border); padding-top: 20px; }
-        .btn { padding: 10px 20px; border: none; border-radius: 6px; font-weight: 500; cursor: pointer; transition: 0.2s; }
-        .btn-primary { background: var(--primary); color: white; }
-        .btn-primary:hover { opacity: 0.9; }
-        .btn-outline { background: white; border: 1px solid var(--border); color: var(--text); }
-        .btn-outline:hover { background: #f1f3f4; }
-        .btn-success { background: var(--success); color: white; }
-        .btn-danger { background: var(--danger); color: white; }
-        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-        .nav-group { display: flex; gap: 10px; }
-
-        .feedback { margin-top: 20px; padding: 15px; border-radius: 6px; display: none; }
-        .feedback.correct { display: block; background: #e6f4ea; border: 1px solid var(--success); }
-        .feedback.wrong { display: block; background: #fce8e6; border: 1px solid var(--danger); }
-        .feedback h4 { margin: 0 0 5px 0; }
-        .feedback .explanation { margin-top: 10px; font-size: 14px; color: #555; }
-
-        .hidden { display: none; }
-        .text-center { text-align: center; }
-        .mt-10 { margin-top: 10px; }
-
-        .jump-nav { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
-
-        .mistakes-bar { display: flex; justify-content: flex-end; margin-bottom: 12px; }
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 980; display: flex; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; }
-        .modal-overlay.hidden { display: none; }
-        .modal-box { background: white; border-radius: 12px; padding: 24px; max-width: 720px; width: 100%; max-height: 85vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.3); }
-        .modal-box h3 { margin-top: 0; }
-        .mistakes-summary { font-size: 14px; color: #555; margin-bottom: 14px; }
-        .mistake-item { background: #fce8e6; border: 1px solid var(--danger); border-radius: 8px; padding: 12px 14px; margin-bottom: 10px; font-size: 13px; }
-        .mistake-item .mq { font-weight: 600; margin-bottom: 6px; }
-        .mistake-item .ma { color: #555; }
-        .prompt-textarea { width: 100%; box-sizing: border-box; min-height: 260px; font-family: monospace; font-size: 13px; padding: 12px; border: 1px solid var(--border); border-radius: 8px; margin-top: 14px; }
-        .modal-actions { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
-        .pause-banner { background: #fff3e0; border: 1px solid #f9902b; border-radius: 10px; padding: 16px 18px; margin-bottom: 20px; font-size: 14px; }
-        .pause-banner strong { color: #c96a00; }
-        .jump-btn { width: 34px; height: 34px; border-radius: 6px; border: 1px solid var(--border); background: white; cursor: pointer; font-size: 13px; display: flex; align-items: center; justify-content: center; }
-        .jump-btn.done-correct { background: #e6f4ea; border-color: var(--success); }
-        .jump-btn.done-wrong { background: #fce8e6; border-color: var(--danger); }
-        .jump-btn.current { outline: 2px solid var(--primary); }
-
-        /* Phrase trainer */
-        .phrase-progress { font-size: 14px; color: #555; margin-bottom: 14px; }
-        .phrase-card-inner { text-align: center; padding: 10px 0; }
-        .phrase-front { font-size: 20px; font-weight: 600; margin-bottom: 10px; }
-        .phrase-translation { font-size: 14px; color: #666; margin-bottom: 20px; }
-        .phrase-answer { display: none; font-size: 18px; background: #e6f4ea; border: 1px solid var(--success); border-radius: 8px; padding: 14px; margin-bottom: 20px; }
-        .phrase-answer.shown { display: block; }
-        .phrase-type-tag { display: inline-block; font-size: 12px; padding: 3px 10px; border-radius: 12px; background: #f1f3f4; color: #555; margin-bottom: 10px; }
-        .phrase-btn-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
-        .phrase-done-msg { text-align: center; padding: 30px 0; }
-
-        /* Selection popup */
-        .sel-popup { position: absolute; z-index: 999; background: #202124; border-radius: 8px; padding: 6px; display: flex; gap: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
-        .sel-popup.hidden { display: none; }
-        .sel-popup button { background: transparent; border: none; color: white; font-size: 15px; padding: 6px 10px; cursor: pointer; border-radius: 4px; }
-        .sel-popup button:hover { background: rgba(255,255,255,0.15); }
-        .selectable { user-select: text; }
-
-        /* Dictionary */
-        .dict-fab { position: fixed; bottom: 20px; right: 20px; background: var(--primary); color: white; border: none; border-radius: 30px; padding: 12px 18px; font-size: 14px; font-weight: 600; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.25); z-index: 900; }
-        .dict-panel { position: fixed; top: 0; right: 0; height: 100%; width: min(420px, 100%); background: white; box-shadow: -4px 0 20px rgba(0,0,0,0.15); z-index: 950; padding: 20px; box-sizing: border-box; overflow-y: auto; }
-        .dict-panel.hidden { display: none; }
-        .dict-panel h3 { margin-top: 0; }
-        .dict-close { position: absolute; top: 16px; right: 16px; background: none; border: none; font-size: 20px; cursor: pointer; }
-        .dict-empty { color: #888; font-size: 14px; margin-top: 20px; }
-        .dict-list { margin-top: 16px; }
-        .dict-entry { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
-        .dict-entry .w { font-weight: 600; }
-        .dict-entry .t { color: #777; font-size: 13px; }
-        .dict-entry .del { background: none; border: none; color: var(--danger); cursor: pointer; font-size: 13px; }
-        .dict-actions { display: flex; gap: 8px; margin-top: 18px; flex-wrap: wrap; }
-        .dict-print-area { column-count: 3; column-gap: 24px; margin-top: 16px; }
-        .dict-print-area .dp-entry { font-size: 13px; margin-bottom: 6px; break-inside: avoid; }
-
-        @media print {
-            body * { visibility: hidden; }
-            .dict-panel, .dict-panel * { visibility: visible; }
-            .dict-panel { position: absolute; top: 0; left: 0; width: 100%; height: auto; box-shadow: none; }
-            .dict-actions, .dict-close, .dict-empty-actions { display: none !important; }
-        }
-    </style>
+    .sources { font-size: 12px; color: #888; margin-top: 20px; }
+    .sources a { color: #888; }
+    footer { text-align: center; font-size: 12px; color: #999; margin-top: 30px; }
+</style>
 </head>
 <body>
 <div class="container">
-    <h2 style="text-align:center; color:var(--primary);">РЕШУ ЦТ и ЦЭ</h2>
-    <h3 style="text-align:center; margin-top:-10px;">Английский язык | Артикль</h3>
+    <h1>Подготовка к ЦТ по английскому языку</h1>
+    <div class="subtitle">Централизованное тестирование в Республике Беларусь — что это и как готовиться</div>
 
-    <div class="tabs">
-        <button class="tab-btn active" data-tab="test" onclick="switchTab('test')">📝 Тест (31 задание)</button>
-        <button class="tab-btn" data-tab="phrases" onclick="switchTab('phrases')">🧠 Фразы на память</button>
+    <div class="card">
+        <h2>📋 Что такое ЦТ и когда его сдавать в 2026 году</h2>
+        <p style="margin-top:0;">Централизованное тестирование (ЦТ) — вступительное испытание для поступления в вузы Беларуси. Для выпускников школ РБ, получающих аттестат в этом же году, действует отдельный централизованный экзамен (ЦЭ) — совмещённый выпускной и вступительный экзамен. Иностранные абитуриенты (включая граждан России) поступают через ЦТ на общих основаниях.</p>
+
+        <div class="fact-grid">
+            <div class="fact-item"><strong>Регистрация на ЦТ‑2026</strong>с 9 по 22 апреля (онлайн на сайте РИКЗ или лично в пункте регистрации)</div>
+            <div class="fact-item"><strong>Экзамен по английскому (ЦТ и ЦЭ)</strong>26 мая и 2 июня 2026 года</div>
+            <div class="fact-item"><strong>Начало тестирования</strong>11:00</div>
+            <div class="fact-item"><strong>Резервные дни</strong>регистрация 8–11 июня, само тестирование позже в июне</div>
+            <div class="fact-item"><strong>Выдача сертификатов ЦТ</strong>с 1 июля</div>
+            <div class="fact-item"><strong>Официальный источник</strong>сайт РИКЗ — <a href="https://rikc.by" target="_blank">rikc.by</a></div>
+        </div>
+
+        <div class="note-box">⚠️ <strong>Даты и формат могут уточняться.</strong> Перед регистрацией обязательно проверьте актуальный график и спецификации на официальном сайте РИКЗ — постановления Министерства образования иногда вносят изменения.</div>
     </div>
 
-    <!-- ===================== TAB: TEST ===================== -->
-    <div id="tab-test" class="tab-panel">
+    <div class="card">
+        <h2>📝 Формат теста по английскому языку</h2>
+        <p style="margin-top:0;">Тест состоит из двух частей: часть А — задания закрытого типа (выбор варианта), часть Б — задания с кратким ответом, более сложные и «дороже» по баллам. Точное число заданий и группировка тем немного меняются год от года, но общая логика сохраняется.</p>
+        <div class="structure-row">
+            <div class="structure-box">
+                <div class="num">Часть А</div>
+                <h4>Закрытые задания</h4>
+                <p>Выбор одного верного варианта из предложенных. Основной объём теста, ~48 заданий. Каждое верное — 1 первичный балл. Тематически собраны в 5–8 блоков: артикли, предлоги, времена, степени сравнения, притяжательный падеж, лексическая сочетаемость и т.д.</p>
+            </div>
+            <div class="structure-box">
+                <div class="num">Часть Б</div>
+                <h4>Задания с кратким ответом</h4>
+                <p>Более объёмные тексты, работа с репликами, поиск лишнего слова, заполнение пропусков. Каждое верное — 2 первичных балла. Требуют практического владения языком, а не только знания правил.</p>
+            </div>
+        </div>
+        <div class="note-box" style="background:#e8f0fe; border-color: var(--primary);">💡 Максимум первичных баллов (по актуальной методике) — 72, которые переводятся в тестовые баллы по стобалльной шкале. Одного знания теории недостаточно — сдающие проверяются на внимательность и знание устойчивых выражений, а не на умение вспомнить формулировку правила.</div>
+    </div>
 
-    <details open>
-        <summary>📖 Грамматика: Артикль (теория перед упражнениями)</summary>
+    <div class="card">
+        <h2>🧰 Тренажёры для подготовки</h2>
+        <p style="margin-top:0; color:#666; font-size:14px;">Три блока, соответствующие основным группам заданий части А. В каждом — теория, практика с моментальной проверкой, тренажёр на память устойчивых конструкций, личный словарь с озвучкой и автоматическая пауза теста при повторяющихся ошибках по одной теме.</p>
 
-        <div class="theory-intro">Артикль показывает слушателю, идёт ли речь о предмете <strong>вообще</strong>, о предмете <strong>каком-то одном из многих</strong>, или о предмете <strong>конкретном, уже известном</strong>. В русском языке этой функции нет, поэтому интуиция здесь не помогает — работают правила и контекст. Ниже пять ситуаций, на которые нужно уметь опираться за секунды прямо во время теста.</div>
-
-        <div class="theory-cards">
-            <div class="theory-card type-a">
-                <div class="num">1</div>
+        <div class="trainer-grid">
+            <a class="trainer-link" href="trenazher_ct_articles.html">
+                <div class="trainer-icon c1">A</div>
                 <div>
-                    <h4>Неопределённый артикль a / an</h4>
-                    <p>Предмет называется впервые или это один из класса однородных предметов, а не конкретный. Форма зависит от <strong>звука</strong> следующего слова, а не от буквы.</p>
-                    <ul class="ex-list selectable">
-                        <li><em>a week's holiday</em></li>
-                        <li><em>an excellent choice</em> (excellent начинается с гласного звука)</li>
-                        <li><em>a chance to broaden your experience</em></li>
-                    </ul>
+                    <div class="trainer-title">Артикль</div>
+                    <div class="trainer-desc">a / an / the / нулевой артикль, географические названия, устойчивые обороты</div>
                 </div>
-            </div>
+                <div class="trainer-count">31 задание</div>
+            </a>
 
-            <div class="theory-card type-the">
-                <div class="num">2</div>
+            <a class="trainer-link" href="trenazher_ct_grammar_forms.html">
+                <div class="trainer-icon c2">Б</div>
                 <div>
-                    <h4>Определённый артикль the</h4>
-                    <p>Предмет уже известен из контекста: упоминался раньше, уточнён придаточным предложением или определением, либо он единственный в данной ситуации.</p>
-                    <ul class="ex-list selectable">
-                        <li><em>a chance</em> (какой-то шанс) → <em>the main reason</em> (именно эта причина, которая далее раскрывается)</li>
-                        <li><em>the ease with which we can wash our clothes</em></li>
-                    </ul>
+                    <div class="trainer-title">Выбор правильной грамматической формы</div>
+                    <div class="trainer-desc">Степени сравнения, герундий/инфинитив, притяжательный падеж, числительные</div>
                 </div>
-            </div>
+                <div class="trainer-count">66 заданий</div>
+            </a>
 
-            <div class="theory-card type-zero">
-                <div class="num">3</div>
+            <a class="trainer-link" href="trenazher_ct_prepositions.html">
+                <div class="trainer-icon c3">П</div>
                 <div>
-                    <h4>Нулевой артикль (—)</h4>
-                    <p>Три случая: неисчисляемые в общем значении; устойчивые предложные обороты; имена собственные, включая одиночные острова. Обороты нужно выучить как готовые блоки — логика тут вторична.</p>
-                    <ul class="ex-list selectable">
-                        <li><em>good news</em>, <em>take pride</em>, <em>have fun</em></li>
-                        <li><em>at present</em>, <em>in advance</em>, <em>in addition</em>, <em>from time to time</em></li>
-                        <li><em>in particular</em>, <em>all in all</em>, <em>by hand</em>, <em>in favour of</em>, <em>in conclusion</em></li>
-                        <li><em>Corsica</em></li>
-                    </ul>
+                    <div class="trainer-title">Предлоги и лексическая сочетаемость</div>
+                    <div class="trainer-desc">Фразовые глаголы, фиксированные предлоги, выбор слова, лишнее слово</div>
                 </div>
-            </div>
-
-            <div class="theory-card type-geo">
-                <div class="num">4</div>
-                <div>
-                    <h4>Географические названия</h4>
-                    <p>Это закреплённая традиция для целых категорий названий, не связанная с «известностью» — нужно выучить списком.</p>
-                    <ul class="ex-list selectable">
-                        <li><strong>С the:</strong> реки (<em>the Nile</em>), моря и океаны (<em>the Atlantic Ocean</em>), страны со словом «Штаты»/«Королевство» (<em>the United States</em>)</li>
-                        <li><strong>Без артикля:</strong> одиночные острова (<em>Corsica</em>), большинство стран (<em>Great Britain</em>)</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="theory-card type-comp">
-                <div class="num">5</div>
-                <div>
-                    <h4>Артикль и сравнительная степень</h4>
-                    <p>Перед прилагательным в сравнительной степени артикль, как правило, не ставится — прилагательное описывает качество в целом, а не выделяет один предмет из группы.</p>
-                    <ul class="ex-list selectable">
-                        <li><em>gives you greater freedom</em>, а не <span class="wrong-ex">a greater freedom</span></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <div class="theory-exam-tip">🎯 <strong>Как это работает на экзамене:</strong> в части А не нужно объяснять правило — нужно за секунды узнать одну из пяти ситуаций выше. При разборе каждого задания проговаривайте <em>почему</em> так: устойчивое выражение? уточнено контекстом? географическое название из списка? Такой разбор в итоге быстрее, чем зубрёжка отдельных фраз.</div>
-
-        <div class="rules-grid">
-            <div class="rule-item"><strong>Неопределённый (a/an):</strong> предмет один из многих, упоминается впервые. <br><i>a week's holiday, an excellent choice</i></div>
-            <div class="rule-item"><strong>Определённый (the):</strong> предмет конкретный, уточнённый контекстом. <br><i>the plane, the main reason, the Internet</i></div>
-            <div class="rule-item"><strong>Нулевой (—):</strong> устойчивые фразы, неисчисляемые в общем смысле, одиночные острова. <br><i>at present, in favour of, move home, Corsica</i></div>
-            <div class="rule-item"><strong>География:</strong> the + реки/моря/океаны/страны-«Штаты»; без артикля — одиночные острова и большинство стран. <br><i>the Nile, the Atlantic Ocean</i></div>
-            <div class="rule-item"><strong>Способ действия и время:</strong> by hand, in advance, in addition, from time to time — без артикля.</div>
-            <div class="rule-item"><strong>Сравнительная степень:</strong> перед прилагательным в сравнительной степени (greater freedom) артикль обычно не ставится.</div>
-        </div>
-    </details>
-
-    <div class="mistakes-bar">
-        <button class="btn btn-outline" onclick="openMistakesModal()">📋 Промпт по ошибкам для ChatGPT</button>
-        <button class="btn btn-danger" onclick="finishTestNow()">🏁 Закончить тест</button>
-    </div>
-
-    <div class="pause-banner hidden" id="pause-banner">
-        ⏸️ <strong><span id="pause-banner-title">Тест приостановлен:</span></strong> <span id="pause-banner-text"></span> <span id="pause-banner-hint">Изучите промпт в открывшемся окне, потом нажмите «Продолжить тест».</span>
-    </div>
-
-    <div class="jump-nav" id="jump-nav"></div>
-
-    <div class="card" id="test-card">
-        <div class="header">
-            <span class="task-id">Задание № <span id="current-id">1</span></span>
-            <span class="score" id="score-display">Решено: 0 / 31</span>
-        </div>
-
-        <div class="question-text selectable" id="question-text">Загрузка...</div>
-
-        <div class="options-list" id="options-container"></div>
-
-        <div class="input-group hidden" id="input-container">
-            <label for="text-answer">Впишите лишнее слово (без кавычек):</label>
-            <input type="text" id="text-answer" placeholder="например, that" autocomplete="off">
-        </div>
-
-        <div class="feedback" id="feedback">
-            <h4 id="fb-title"></h4>
-            <div id="fb-explanation" class="explanation"></div>
-        </div>
-
-        <div class="action-row">
-            <div class="nav-group">
-                <button class="btn btn-outline" onclick="prevTask()" id="prev-btn">← Пред.</button>
-                <button class="btn btn-outline" onclick="nextTask()" id="next-btn">След. →</button>
-            </div>
-            <div>
-                <button class="btn btn-primary" onclick="checkAnswer()" id="check-btn">Проверить</button>
-                <button class="btn btn-outline hidden" onclick="showAnswer()" id="show-btn">Показать ответ</button>
-            </div>
+                <div class="trainer-count">56 заданий</div>
+            </a>
         </div>
     </div>
 
-    <div class="text-center mt-10" id="complete-msg" style="display:none; color:var(--primary); font-weight:bold; font-size:18px;">
-        🎉 Вы прошли все 31 задание!
-    </div>
-    </div>
-    <!-- ===================== /TAB: TEST ===================== -->
-
-    <div class="modal-overlay hidden" id="mistakes-modal">
-        <div class="modal-box">
-            <h3>📋 Промпт по ошибкам для ChatGPT</h3>
-            <div class="mistakes-summary" id="mistakes-summary">—</div>
-            <div id="mistakes-list"></div>
-            <textarea class="prompt-textarea" id="mistakes-prompt-text" readonly></textarea>
-            <div class="modal-actions">
-                <button class="btn btn-primary" onclick="copyMistakesPrompt()">📋 Скопировать промпт</button>
-                <button class="btn btn-success hidden" id="resume-test-btn" onclick="resumeTest()">▶️ Продолжить тест</button>
-                <button class="btn btn-outline" onclick="closeMistakesModal()">Закрыть</button>
-            </div>
-        </div>
+    <div class="sources">
+        Источники: <a href="https://rikc.by" target="_blank">rikc.by</a> (официальный сайт РИКЗ) ·
+        <a href="https://people.onliner.by" target="_blank">onliner.by</a> ·
+        <a href="https://adukar.by" target="_blank">adukar.by</a> ·
+        <a href="https://teenage.by" target="_blank">teenage.by</a>
     </div>
 
-    <!-- ===================== TAB: PHRASES ===================== -->
-    <div id="tab-phrases" class="tab-panel hidden">
-        <div class="card">
-            <p style="margin-top:0; color:#555; font-size:14px;">Устойчивые обороты, которые встречались в упражнениях выше. Логика артикля здесь не работает — их нужно просто запомнить как готовые блоки. Карточка показывает перевод, вы вспоминаете фразу с артиклем, потом проверяете себя.</p>
-            <div class="phrase-progress" id="phrase-progress">Осталось повторить: 26</div>
-
-            <div class="phrase-card-inner">
-                <div class="phrase-type-tag" id="phrase-tag">—</div>
-                <div class="phrase-front selectable" id="phrase-front-text">—</div>
-                <div class="phrase-translation" id="phrase-translation">—</div>
-                <div class="phrase-answer selectable" id="phrase-answer-text">—</div>
-                <div class="phrase-btn-row" id="phrase-btn-row-1">
-                    <button class="btn btn-outline" id="phrase-speak-btn">🔊 Прослушать</button>
-                    <button class="btn btn-primary" id="phrase-reveal-btn">Показать ответ</button>
-                </div>
-                <div class="phrase-btn-row hidden" id="phrase-btn-row-2" style="margin-top:14px;">
-                    <button class="btn btn-danger" id="phrase-forgot-btn">😕 Забыл</button>
-                    <button class="btn btn-success" id="phrase-remembered-btn">✅ Помню</button>
-                </div>
-            </div>
-
-            <div class="phrase-done-msg hidden" id="phrase-done-msg">
-                <p style="font-size:18px; font-weight:600; color:var(--success);">🎉 Все фразы повторены!</p>
-                <button class="btn btn-outline" onclick="restartPhrases(false)">Повторить только те, что забыл</button>
-                <button class="btn btn-primary" onclick="restartPhrases(true)">Начать заново все фразы</button>
-            </div>
-        </div>
-    </div>
-    <!-- ===================== /TAB: PHRASES ===================== -->
-
+    <footer>Материал для личной подготовки. Актуальные сроки и спецификации всегда проверяйте на сайте РИКЗ.</footer>
 </div>
-
-<!-- Selection popup for "listen / add to dictionary" -->
-<div class="sel-popup hidden" id="sel-popup">
-    <button id="sel-speak-btn" title="Прослушать">🔊</button>
-    <button id="sel-add-btn" title="Добавить в словарь">➕ В словарь</button>
-</div>
-
-<!-- Dictionary FAB + panel -->
-<button class="dict-fab" id="dict-fab" onclick="toggleDictPanel(true)">📖 Словарь (<span id="dict-count">0</span>)</button>
-
-<div class="dict-panel hidden" id="dict-panel">
-    <button class="dict-close" onclick="toggleDictPanel(false)">✕</button>
-    <h3>📖 Мой словарь</h3>
-    <div class="dict-empty" id="dict-empty">Пока пусто. Выделите любое слово в тексте выше и нажмите «➕ В словарь».</div>
-    <div class="dict-list" id="dict-list"></div>
-    <div class="dict-actions" id="dict-empty-actions"></div>
-    <div class="dict-actions">
-        <button class="btn btn-primary" onclick="printDict()">🖨️ Печать (3 колонки)</button>
-        <button class="btn btn-outline" onclick="copyDict()">📋 Скопировать</button>
-        <button class="btn btn-outline" onclick="clearDict()">🗑️ Очистить</button>
-    </div>
-    <div class="dict-print-area" id="dict-print-area"></div>
-</div>
-
-<script>
-    /* ============ TEST DATA (unchanged, 31 tasks) ============ */
-    const tasks = [
-        { id: 1, type: 'choice', topic: 'zero', text: '(1) Have you noticed that some people lead busy social lives with lots of friends, while others are content with just a few close social ties? Personally, I have <span class="blank">___</span> wide circle of friends and am all in <span class="blank">___</span> favour of this, as it has a number of advantages.', options: ['a, —', 'the, a', 'a, the', '—, —', 'the, the'], correct: 1, explanation: '"a wide circle of" (неопр.) — устойчивое выражение, "in favour of" (нулевой) — устойчивое выражение.' },
-        { id: 2, type: 'choice', topic: 'the', text: '(1) What’s <span class="blank">___</span> right age to leave home? These days, many people continue to live with their parents into their twenties, or even thirties. In my opinion, we should leave home early, but it is not <span class="blank">___</span> option for everyone.', options: ['—, —', 'the, an', 'a, the', 'a, an', 'the, the', 'a, —'], correct: 2, explanation: '"the right age" (конкретный возраст), "not an option" (один из вариантов, произносится с гласной [ɒ] → an).' },
-        { id: 3, type: 'choice', topic: 'the', text: '(2) First of all, it can give you <span class="blank">___</span> chance to broaden your experience and knowledge. You will enrich your social awareness. As <span class="blank">___</span> result, you become more socially adapted to various situations.', options: ['a, —', 'the, the', 'the, a', 'a, the', '—, —'], correct: 3, explanation: '"the chance" (имеется в виду конкретная возможность), "as a result" (устойчивое выражение — в результате).' },
-        { id: 4, type: 'choice', topic: 'zero', text: '(3) Second, you are rarely left without a friend. People in Western society, in <span class="blank">___</span> particular, frequently move <span class="blank">___</span> home for various reasons, leaving their friends behind.', options: ['the, a', 'a, —', 'the, the', '—, the', '—, —'], correct: 5, explanation: '"in particular" (в частности — устойчиво, без артикля), "move home" (переехать домой — всегда без артикля).' },
-        { id: 5, type: 'choice', topic: 'zero', text: '(4) Instead of losing their one close friend in a move, they will lose one of many, who will still be around for them. In <span class="blank">___</span> conclusion, having a large number of friends is more desirable than just having a few. To my way of <span class="blank">___</span> thinking, it develops us socially as well as bringing more practical benefits.', options: ['—, the', '—, —', 'the, the', 'a, a', '—, a'], correct: 2, explanation: '"in conclusion" (в заключение — устойчиво), "to my way of thinking" (по моему мнению — устойчиво).' },
-        { id: 6, type: 'choice', topic: 'the', text: '(2) Probably <span class="blank">___</span> main reason why people stay with their parents is because they cannot afford to leave. You need to have a job and be able to pay your rent and bills. In <span class="blank">___</span> addition, you have to pay for your own food and clothes.', options: ['the, the', '—, —', 'the, an', 'the, —', 'a, —'], correct: 4, explanation: '"the main reason" (определённая главная причина, раскрытая далее), "in addition" (в дополнение — устойчивое выражение).' },
-        { id: 7, type: 'choice', topic: 'comparative', text: '(3) On the other hand, leaving home gives you <span class="blank">___</span> greater freedom. You can also find flatmates who share your interests, so life can be <span class="blank">___</span> fun.', options: ['a, a', 'the, a', 'the, the', '—, a', '—, —'], correct: 5, explanation: 'Перед сравнительной степенью "greater freedom" нулевой артикль; "be fun" (быть весёлым) — устойчивое выражение с нулевым.' },
-        { id: 8, type: 'choice', topic: 'zero', text: '(4) Another consideration is that we suddenly have to do everything ourselves, but we can learn a lot from it. As <span class="blank">___</span> result, we become more able to take <span class="blank">___</span> care of ourselves.', options: ['the, the', 'a, a', 'a, —', '—, —', 'the, a'], correct: 3, explanation: '"as a result" (устойчивое), "take care of" (заботиться о — устойчивое, без артикля).' },
-        { id: 9, type: 'choice', topic: 'the', text: '(1) Nowadays <span class="blank">___</span> ease with which we can wash our clothes is taken for granted. All we have to do is pop our laundry into the washing machine, put in some washing powder, make sure the settings are correct and switch on. However, this basic appliance has only become <span class="blank">___</span> common feature of most households since the 1950s.', options: ['—, the', 'the, a', '—, n', 'an, the', 'an, —'], correct: 2, explanation: '"the ease" (конкретная лёгкость с уточнением), "a common feature" (один из признаков, неопределённый).' },
-        { id: 10, type: 'choice', topic: 'zero', text: '(2) The first mechanical washing machines were in <span class="blank">___</span> use as far back as the 1700s, but it wasn\'t until the early 1900s that they were taken seriously and developed. Eventually the washing machine became <span class="blank">___</span> status symbol because it was well outside the price range of the average family.', options: ['the, the', 'a, the', 'a, a', '—, a', 'the, —'], correct: 4, explanation: '"in use" (быть в использовании — устойчиво), "a status symbol" (общее понятие, неопр. артикль).' },
-        { id: 11, type: 'choice', topic: 'the', text: '(1) How many times have you been unable to make a call on your mobile phone because <span class="blank">___</span> battery has gone flat? If your answer is at least once, then there is <span class="blank">___</span> good news in the form of a dynamo powered by human motion.', options: ['—, the', 'the, a', 'the, —', 'a, a', 'the, the'], correct: 3, explanation: '"the battery" (конкретная батарея твоего телефона), "good news" (новости — неисчисляемое, нулевой артикль).' },
-        { id: 12, type: 'choice', topic: 'zero', text: '(2) This new gadget could put <span class="blank">___</span> end to the excuse of a flat battery. Even on a gentle stroll the gadget generates enough energy to run a mobile phone. Although the device is quite large, it has little effect on the wearer. During initial trials, the invention was worn by six people walking on a treadmill (беговая дорожка) at <span class="blank">___</span> speed of three kilometres an hour.', options: ['the, the', 'the, —', '—, the', 'an, a', 'an, —'], correct: 4, explanation: '"put an end" (положить конец — устойчиво), "at a speed of" (со скоростью — устойчиво).' },
-        { id: 13, type: 'choice', topic: 'a_an', text: '(1) Have you ever thought of visiting <span class="blank">___</span> city which combines stunning beauty and a long history? York, the attractive, historical, walled city in North Yorkshire in England, can be <span class="blank">___</span> excellent choice.', options: ['a, an', '—, —', '—, the', '—, an', 'the, —'], correct: 1, explanation: '"a city" (общее понятие), "an excellent choice" (неопр. артикль, т.к. "excellent" начинается с гласной).' },
-        { id: 14, type: 'choice', topic: 'zero', text: '(2) The Romans built York in AD 71. It has many remarkable sights to see, all of which reflect its importance in history. If you stroll down to the city centre, Jorvik Viking Centre, situated in one of the oldest Viking Age cities, can offer you an amazing journey through Viking Age as soon as you step aboard a time car. In <span class="blank">___</span> actual fact, it takes you through a bustling market, dark, smokey houses and a busy wharf. They have all been recreated in <span class="blank">___</span> accurate detail so that you can experience in sight, sound and smell what it was like to live and work in the Vikings’ city of Yorvik.', options: ['an, the', '—, an', 'an, an', 'the, —', '—, —'], correct: 5, explanation: '"in actual fact" (в действительности — нулевой), "in accurate detail" (точно, детально — абстрактное, нулевой).' },
-        { id: 15, type: 'choice', topic: 'a_an', text: '(1) I had an interesting experience on board a plane from my country last summer. I was on my way to England with my family for <span class="blank">___</span> week’s holiday. When we got into the cabin, I noticed a girl with beautiful blonde hair and felt I had seen her somewhere before. My seat turned out to be right next to hers, and I was waiting for <span class="blank">___</span> good moment to break the ice and ask where I’d seen her before.', options: ['a, a', 'the, the', 'a, —', '—, —', '—, a'], correct: 1, explanation: '"a week\'s holiday" (выражение с притяжательным падежом), "a good moment" (неопр. — какой-то момент).' },
-        { id: 16, type: 'choice', topic: 'zero', text: '(2) I take <span class="blank">___</span> pride in being very polite, so I didn’t want to just start talking to her! I didn\'t want to bother her because she was watching a movie on her laptop while more passengers boarded <span class="blank">___</span> plane.', options: ['the, a', '—, an', 'the, —', '—, the', 'a, —'], correct: 4, explanation: '"take pride" (гордиться — абстрактное, нулевой), "boarded the plane" (взошли на конкретный самолёт).' },
-        { id: 17, type: 'choice', topic: 'geo', text: '<span class="blank">___</span> Corsica is a large island to the south of France in <span class="blank">___</span> Mediterranean Sea, where Napoleon was born.', options: ['The, —', '—, —', 'The, the', 'A, —', '—, the'], correct: 5, explanation: 'Одиночные острова (Corsica) — нулевой артикль. Моря (the Mediterranean Sea) — определённый артикль.' },
-        { id: 18, type: 'choice', topic: 'geo', text: '<span class="blank">___</span> Atlantic Ocean lies between Great Britain and <span class="blank">___</span> United States.', options: ['—, —', 'An, the', '—, the', 'The, —', 'The, the'], correct: 5, explanation: 'Океаны и страны со словом "штаты" (the United States) — всегда с определённым артиклем.' },
-        { id: 19, type: 'choice', topic: 'geo', text: '<span class="blank">___</span> St Lawrence River connects the Great Lakes to <span class="blank">___</span> Atlantic Ocean.', options: ['The, the', '—, —', 'The, —', 'A, the', '—, an'], correct: 1, explanation: 'Реки и океаны — всегда с определённым артиклем the.' },
-        { id: 20, type: 'choice', topic: 'geo', text: '<span class="blank">___</span> Nile is a river in northeast Africa which flows into <span class="blank">___</span> Mediterranean Sea.', options: ['The, —', 'The, the', '—, the', '—, —', '—, a'], correct: 2, explanation: 'Реки и моря — всегда с определённым артиклем the.' },
-        { id: 21, type: 'choice', topic: 'zero', text: '(3) As soon as the washing machine became affordable, Monday, or “wash day", changed completely. <span class="blank">___</span> tiring job of washing clothes by <span class="blank">___</span> hand disappeared forever and was transformed into the simple task it is today.', options: ['A, the', '—, —', 'The, the', 'A, a', 'The, —'], correct: 5, explanation: '"The tiring job" (конкретная утомительная работа), "by hand" (способ действия с предлогом by — всегда нулевой артикль).' },
-        { id: 22, type: 'choice', topic: 'the', text: '(3) With two devices, one on each leg, the volunteers generated just under five watts of electricity. The test results were excellent, but the inventor believes that improvements need to be made. His first aim is to make <span class="blank">___</span> device even easier to carry than it is at <span class="blank">___</span> present.', options: ['the, —', 'a, the', '—, —', 'a, a', '—, the'], correct: 1, explanation: '"the device" (конкретное устройство, которое уже обсуждалось), "at present" (в настоящее время — устойчиво).' },
-        { id: 23, type: 'choice', topic: 'zero', text: '(3) As for a walk through York’s historic city centre with its narrow medieval streets and modern shops, it’ll definitely be a memorable experience. You can see there how successfully the old and the modern worlds can co-exist. All in <span class="blank">___</span> all, York, which still keeps its traditional style and cultural heritage down the centuries, is <span class="blank">___</span> city to remember.', options: ['an, a', 'the, the', '—, a', '—, —', 'the, a'], correct: 3, explanation: '"All in all" (в общем и целом — нулевой), "a city to remember" (один из городов — неопр.).' },
-        { id: 24, type: 'choice', topic: 'zero', text: '(3) We started talking, and she told me that she was English and was returning home from a visit to my city. Now, <span class="blank">___</span> year on, we are great friends and communicate regularly. It’s always great to come into <span class="blank">___</span> contact with people from different countries — wherever you are!', options: ['a, the', 'the, a', 'the, the', '—, —', 'a, —'], correct: 5, explanation: '"a year on" (год спустя), "come into contact" (вступать в контакт — устойчиво, нулевой).' },
-        { id: 25, type: 'choice', topic: 'the', text: 'All these services are available to <span class="blank">___</span> public free of <span class="blank">___</span> charge.', options: ['a, the', '—, a', 'the, —', 'a, a', 'the, the'], correct: 3, explanation: '"the public" (конкретная категория людей — публика), "free of charge" (бесплатно — устойчиво).' },
-        { id: 26, type: 'choice', topic: 'zero', text: 'From <span class="blank">___</span> time to time I cook dinner, but usually it’s my mum who does it. After dinner, I play video games or surf <span class="blank">___</span> Internet.', options: ['a, —', 'the, —', '—, the', 'the, the', '—, an'], correct: 3, explanation: '"from time to time" (время от времени — нулевой), "the Internet" (интернет — всегда с the).' },
-        { id: 27, type: 'choice', topic: 'a_an', text: 'When people want to see a doctor, they have to make <span class="blank">___</span> appointment in <span class="blank">___</span> advance.', options: ['an, an', '—, an', 'an, the', 'an, —', '—, —'], correct: 4, explanation: '"make an appointment" (назначить встречу), "in advance" (заранее — нулевой).' },
-        { id: 28, type: 'choice', topic: 'the', text: 'Such <span class="blank">___</span> lovely weather at <span class="blank">___</span> sunrise inspired me to take a moment to appreciate the simple pleasures of nature.', options: ['the, a', 'a, the', '—, —', 'a, a', '—, the'], correct: 2, explanation: '"a lovely weather" (один из многих видов погоды — неопр.), "at the sunrise" (конкретный, известный момент восхода).' },
-        { id: 29, type: 'input', topic: 'extra_word', text: 'Из строки (5): "... according to scientists, the average family <span class="blank">___</span> that actually has a much more peaceful experience."', correct: 'that', explanation: 'Слово "that" является лишним, так как предложение остаётся грамматически правильным и понятным без него.' },
-        { id: 30, type: 'choice', topic: 'zero', text: 'Let’s plan a romantic picnic and have <span class="blank">___</span> fun strolling hand in <span class="blank">___</span> hand at sunset.', options: ['—, —', 'a, the', '—, the', '—, a', 'the, —'], correct: 1, explanation: '"have fun" (веселиться — устойчиво), "hand in hand" (рука об руку — фразеологизм).' },
-        { id: 31, type: 'input', topic: 'extra_word', text: 'Из строки (5): "The ability of computer gamers <span class="blank">___</span> what is measured in APMs (actions per minute)."', correct: 'what', explanation: 'Слово "what" является лишним: подлежащее "ability" и сказуемое "is measured" уже образуют правильную структуру без него.' }
-    ];
-
-    let currentIdx = 0;
-    let answered = new Array(tasks.length).fill(false);
-    let wasCorrect = new Array(tasks.length).fill(null);
-    let userAnswersLog = new Array(tasks.length).fill(null);
-    let userAnswer = null;
-
-    const taskIdEl = document.getElementById('current-id');
-    const scoreEl = document.getElementById('score-display');
-    const questionText = document.getElementById('question-text');
-    const optionsContainer = document.getElementById('options-container');
-    const inputContainer = document.getElementById('input-container');
-    const textAnswer = document.getElementById('text-answer');
-    const feedbackEl = document.getElementById('feedback');
-    const fbTitle = document.getElementById('fb-title');
-    const fbExplanation = document.getElementById('fb-explanation');
-    const checkBtn = document.getElementById('check-btn');
-    const showBtn = document.getElementById('show-btn');
-    const completeMsg = document.getElementById('complete-msg');
-    const jumpNav = document.getElementById('jump-nav');
-
-    function buildJumpNav() {
-        jumpNav.innerHTML = '';
-        tasks.forEach((t, idx) => {
-            const btn = document.createElement('button');
-            btn.className = 'jump-btn';
-            btn.textContent = t.id;
-            btn.id = 'jump-' + idx;
-            btn.onclick = () => { currentIdx = idx; renderTask(); };
-            jumpNav.appendChild(btn);
-        });
-        updateJumpNav();
-    }
-
-    function updateJumpNav() {
-        tasks.forEach((t, idx) => {
-            const btn = document.getElementById('jump-' + idx);
-            btn.classList.remove('done-correct', 'done-wrong', 'current');
-            if (answered[idx]) btn.classList.add(wasCorrect[idx] ? 'done-correct' : 'done-wrong');
-            if (idx === currentIdx) btn.classList.add('current');
-        });
-    }
-
-    function renderTask() {
-        const task = tasks[currentIdx];
-        taskIdEl.textContent = task.id;
-        questionText.innerHTML = task.text;
-        feedbackEl.className = 'feedback';
-        feedbackEl.style.display = 'none';
-        checkBtn.disabled = false;
-        checkBtn.textContent = 'Проверить';
-        showBtn.classList.add('hidden');
-        textAnswer.value = '';
-        completeMsg.style.display = 'none';
-
-        const solved = answered.filter(a => a === true).length;
-        scoreEl.textContent = `Решено: ${solved} / ${tasks.length}`;
-
-        if (task.type === 'choice') {
-            optionsContainer.classList.remove('hidden');
-            inputContainer.classList.add('hidden');
-            optionsContainer.innerHTML = '';
-            task.options.forEach((opt, index) => {
-                const label = document.createElement('label');
-                label.className = 'option-item';
-                const radio = document.createElement('input');
-                radio.type = 'radio';
-                radio.name = 'q-option';
-                radio.value = index + 1;
-                label.appendChild(radio);
-                const span = document.createElement('span');
-                span.textContent = `${index + 1}) ${opt}`;
-                label.appendChild(span);
-                label.onclick = () => selectOption(label, index + 1);
-                optionsContainer.appendChild(label);
-            });
-            userAnswer = null;
-        } else {
-            optionsContainer.classList.add('hidden');
-            inputContainer.classList.remove('hidden');
-            textAnswer.focus();
-            userAnswer = null;
-        }
-
-        if (answered[currentIdx]) {
-            checkBtn.disabled = true;
-            checkBtn.textContent = 'Проверено';
-            showBtn.classList.remove('hidden');
-            if (task.type === 'choice') {
-                const allLabels = optionsContainer.querySelectorAll('.option-item');
-                allLabels.forEach((l, idx) => {
-                    l.classList.add((idx + 1) === task.correct ? 'correct' : 'wrong');
-                    l.style.pointerEvents = 'none';
-                    l.querySelector('input').disabled = true;
-                });
-            } else {
-                textAnswer.disabled = true;
-            }
-            showFeedback(wasCorrect[currentIdx], task.correct, task.explanation);
-        }
-        updateJumpNav();
-    }
-
-    function selectOption(label, value) {
-        if (answered[currentIdx]) return;
-        const allLabels = optionsContainer.querySelectorAll('.option-item');
-        allLabels.forEach(l => l.classList.remove('selected'));
-        label.classList.add('selected');
-        userAnswer = value;
-    }
-
-    function checkAnswer() {
-        if (answered[currentIdx]) return;
-        const task = tasks[currentIdx];
-        let isCorrect = false;
-
-        if (task.type === 'choice') {
-            if (userAnswer === null) { alert('Пожалуйста, выберите вариант ответа!'); return; }
-            isCorrect = userAnswer === task.correct;
-        } else {
-            const val = textAnswer.value.trim().toLowerCase();
-            if (!val) { alert('Пожалуйста, введите слово!'); return; }
-            isCorrect = val === task.correct.toLowerCase();
-        }
-
-        answered[currentIdx] = true;
-        wasCorrect[currentIdx] = isCorrect;
-        userAnswersLog[currentIdx] = task.type === 'choice' ? task.options[userAnswer - 1] : textAnswer.value.trim();
-
-        if (task.type === 'choice') {
-            const allLabels = optionsContainer.querySelectorAll('.option-item');
-            allLabels.forEach((l, idx) => {
-                l.style.pointerEvents = 'none';
-                l.querySelector('input').disabled = true;
-                if ((idx + 1) === task.correct) l.classList.add('correct');
-                else if ((idx + 1) === userAnswer) l.classList.add('wrong');
-            });
-        } else {
-            textAnswer.disabled = true;
-        }
-
-        checkBtn.disabled = true;
-        checkBtn.textContent = 'Проверено';
-        showBtn.classList.remove('hidden');
-        showFeedback(isCorrect, task.correct, task.explanation);
-        scoreEl.textContent = `Решено: ${answered.filter(a => a).length} / ${tasks.length}`;
-        updateJumpNav();
-        if (answered.every(a => a)) completeMsg.style.display = 'block';
-        if (!isCorrect) registerMistakeForTopic(task.topic);
-    }
-
-    function showAnswer() {
-        const task = tasks[currentIdx];
-        alert(task.type === 'input' ? `Правильное слово: ${task.correct}` : `Правильный ответ: ${task.correct}) ${task.options[task.correct - 1]}`);
-    }
-
-    function showFeedback(isCorrect, correctVal, explanation) {
-        feedbackEl.style.display = 'block';
-        feedbackEl.className = 'feedback ' + (isCorrect ? 'correct' : 'wrong');
-        fbTitle.textContent = isCorrect ? '✅ Верно!' : '❌ Неправильно';
-        fbExplanation.innerHTML = `<strong>Пояснение:</strong> ${explanation}`;
-    }
-
-    function prevTask() { if (currentIdx > 0) { currentIdx--; renderTask(); } }
-    function nextTask() { if (currentIdx < tasks.length - 1) { currentIdx++; renderTask(); } }
-
-    /* ============ MISTAKE COUNTING BY TOPIC + AUTO-PAUSE ============ */
-    const topicLabels = {
-        a_an: 'Неопределённый артикль (a / an)',
-        the: 'Определённый артикль (the)',
-        zero: 'Нулевой артикль и устойчивые выражения',
-        geo: 'Географические названия',
-        comparative: 'Артикль со сравнительной степенью',
-        extra_word: 'Лишнее слово в строке'
-    };
-    let mistakeCountByTopic = {};
-    let globalMistakeCount = 0;
-    let pausedForTopic = null;
-
-    function registerMistakeForTopic(topic) {
-        globalMistakeCount++;
-        if (topic) {
-            mistakeCountByTopic[topic] = (mistakeCountByTopic[topic] || 0) + 1;
-            if (mistakeCountByTopic[topic] % 2 === 0) {
-                pauseTestForTopic(topic);
-                return;
-            }
-        }
-        if (globalMistakeCount % 3 === 0) {
-            pauseTestForTopic(null, false);
-        }
-    }
-
-    function pauseTestForTopic(topic, manual) {
-        pausedForTopic = topic;
-        document.getElementById('test-card').classList.add('hidden');
-        const banner = document.getElementById('pause-banner');
-        banner.classList.remove('hidden');
-        const titleEl = document.getElementById('pause-banner-title');
-        const hintEl = document.getElementById('pause-banner-hint');
-        if (manual) {
-            titleEl.textContent = 'Тест завершён по вашему решению:';
-            document.getElementById('pause-banner-text').textContent =
-                `всего допущено ${globalMistakeCount} ошибки за это прохождение.`;
-            hintEl.textContent = 'Ниже — сводка по всем ошибкам. Можно продолжить тест или закрыть окно.';
-        } else if (topic) {
-            titleEl.textContent = 'Тест приостановлен:';
-            document.getElementById('pause-banner-text').textContent =
-                `у вас уже ${mistakeCountByTopic[topic]} ошибки по теме «${topicLabels[topic] || topic}».`;
-            hintEl.textContent = 'Изучите промпт в открывшемся окне, потом нажмите «Продолжить тест».';
-        } else {
-            titleEl.textContent = 'Тест приостановлен:';
-            document.getElementById('pause-banner-text').textContent =
-                `у вас уже ${globalMistakeCount} ошибки в разных заданиях теста.`;
-            hintEl.textContent = 'Изучите промпт в открывшемся окне, потом нажмите «Продолжить тест».';
-        }
-        openMistakesModal(topic, true);
-    }
-
-    function finishTestNow() {
-        pauseTestForTopic(null, true);
-    }
-
-    function resumeTest() {
-        pausedForTopic = null;
-        document.getElementById('test-card').classList.remove('hidden');
-        document.getElementById('pause-banner').classList.add('hidden');
-        closeMistakesModal();
-    }
-
-    /* ============ MISTAKES → CHATGPT PROMPT ============ */
-    function stripHtml(html) {
-        const tmp = document.createElement('div');
-        tmp.innerHTML = html.replace(/<span class="blank">___<\/span>/g, '___');
-        return tmp.textContent.replace(/\s+/g, ' ').trim();
-    }
-
-    function collectMistakes(topicFilter) {
-        const list = [];
-        tasks.forEach((task, idx) => {
-            if (answered[idx] && !wasCorrect[idx] && (!topicFilter || task.topic === topicFilter)) {
-                const correctText = task.type === 'choice' ? task.options[task.correct - 1] : task.correct;
-                list.push({
-                    n: idx + 1,
-                    topic: task.topic,
-                    question: stripHtml(task.text),
-                    userAnswer: userAnswersLog[idx] || '(не сохранено)',
-                    correct: correctText,
-                    explanation: task.explanation
-                });
-            }
-        });
-        return list;
-    }
-
-    function buildMistakesPrompt(mistakes, topicFilter) {
-        const topic = topicFilter
-            ? `«${topicLabels[topicFilter] || topicFilter}» (английский язык, подготовка к ЦТ/ЦЭ)`
-            : 'Артикль (a / an / the / нулевой), английский язык, подготовка к ЦТ/ЦЭ';
-        let header = `Я готовлюсь к централизованному тестированию (ЦТ) по английскому языку. `
-            + `Прошёл тренажёр по теме ${topic} и ошибся в ${mistakes.length} задании(ях).\n\n`
-            + `Прошу тебя позаниматься со мной по каждой ошибке ниже по следующей методике, ОДНА ошибка за раз, не переходя к следующей, пока не закреплена текущая:\n`
-            + `1. Кратко объясни правило простыми словами — почему в этом месте именно такой артикль/форма.\n`
-            + `2. Проговори (напиши полностью, как для чтения вслух и повторения) правильный вариант фразы или конструкции целиком, чтобы я мог прослушать её и повторить вслух.\n`
-            + `3. Только после этого дай мне 2-3 новых коротких упражнения на именно эту конкретную конструкцию (не на всю тему сразу), похожих по формату на исходное задание, с ответами в конце.\n\n`
-            + `Вот мои ошибки:\n\n`;
-
-        let body = mistakes.map((m, i) =>
-            `${i + 1}) Задание: ${m.question}\n`
-            + `Мой ответ: ${m.userAnswer}\n`
-            + `Правильный ответ: ${m.correct}\n`
-            + `Пояснение из тренажёра: ${m.explanation}\n`
-        ).join('\n');
-
-        return header + body;
-    }
-
-    function openMistakesModal(topicFilter, isPauseContext) {
-        const mistakes = collectMistakes(topicFilter);
-        const summaryEl = document.getElementById('mistakes-summary');
-        const listEl = document.getElementById('mistakes-list');
-        const promptEl = document.getElementById('mistakes-prompt-text');
-        const resumeBtn = document.getElementById('resume-test-btn');
-
-        resumeBtn.classList.toggle('hidden', !isPauseContext);
-
-        if (mistakes.length === 0) {
-            summaryEl.textContent = 'Пока нет ни одной зафиксированной ошибки (либо задания ещё не пройдены, либо все решены верно).';
-            listEl.innerHTML = '';
-            promptEl.value = '';
-        } else {
-            summaryEl.textContent = topicFilter
-                ? `Тема «${topicLabels[topicFilter] || topicFilter}»: ${mistakes.length} ошибка(ок).`
-                : `Найдено ${mistakes.length} ошибка(ок) из ${answered.filter(a => a).length} пройденных заданий.`;
-            listEl.innerHTML = mistakes.map(m =>
-                `<div class="mistake-item"><div class="mq">№${m.n}: ${m.question}</div><div class="ma">Ваш ответ: ${m.userAnswer} → Правильно: ${m.correct}</div></div>`
-            ).join('');
-            promptEl.value = buildMistakesPrompt(mistakes, topicFilter);
-        }
-        document.getElementById('mistakes-modal').classList.remove('hidden');
-    }
-
-    function closeMistakesModal() {
-        document.getElementById('mistakes-modal').classList.add('hidden');
-    }
-
-    function copyMistakesPrompt() {
-        const promptEl = document.getElementById('mistakes-prompt-text');
-        if (!promptEl.value) { alert('Промпт пуст — сначала пройдите задания.'); return; }
-        promptEl.select();
-        try {
-            navigator.clipboard.writeText(promptEl.value).then(() => alert('Промпт скопирован! Вставьте его в ChatGPT.'));
-        } catch (err) {
-            document.execCommand('copy');
-            alert('Промпт скопирован! Вставьте его в ChatGPT.');
-        }
-    }
-
-    buildJumpNav();
-    renderTask();
-
-    /* ============ TABS ============ */
-    function switchTab(name) {
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === name));
-        document.getElementById('tab-test').classList.toggle('hidden', name !== 'test');
-        document.getElementById('tab-phrases').classList.toggle('hidden', name !== 'phrases');
-    }
-
-    /* ============ PHRASE MEMORY TRAINER ============ */
-    const phrasesData = [
-        { front: 'in ___ favour of', answer: 'in favour of', translation: 'в пользу, за (что-то)', tag: 'нулевой артикль' },
-        { front: 'as ___ result', answer: 'as a result', translation: 'в результате', tag: 'неопределённый артикль' },
-        { front: 'in ___ particular', answer: 'in particular', translation: 'в частности', tag: 'нулевой артикль' },
-        { front: 'move ___ home', answer: 'move home', translation: 'переехать домой', tag: 'нулевой артикль' },
-        { front: 'in ___ conclusion', answer: 'in conclusion', translation: 'в заключение', tag: 'нулевой артикль' },
-        { front: 'to my way of ___ thinking', answer: 'to my way of thinking', translation: 'по моему мнению', tag: 'нулевой артикль' },
-        { front: 'in ___ addition', answer: 'in addition', translation: 'в дополнение', tag: 'нулевой артикль' },
-        { front: 'be ___ fun', answer: 'be fun', translation: 'быть весёлым, забавным', tag: 'нулевой артикль' },
-        { front: 'take ___ care of', answer: 'take care of', translation: 'заботиться о', tag: 'нулевой артикль' },
-        { front: 'in ___ use', answer: 'in use', translation: 'в использовании, применяется', tag: 'нулевой артикль' },
-        { front: 'put ___ end (to)', answer: 'put an end (to)', translation: 'положить конец (чему-то)', tag: 'неопределённый артикль' },
-        { front: 'at ___ speed of', answer: 'at a speed of', translation: 'со скоростью', tag: 'неопределённый артикль' },
-        { front: 'in ___ actual fact', answer: 'in actual fact', translation: 'на самом деле, в действительности', tag: 'нулевой артикль' },
-        { front: 'in ___ accurate detail', answer: 'in accurate detail', translation: 'точно, подробно', tag: 'нулевой артикль' },
-        { front: 'all in ___ all', answer: 'all in all', translation: 'в общем и целом', tag: 'нулевой артикль' },
-        { front: 'by ___ hand', answer: 'by hand', translation: 'вручную', tag: 'нулевой артикль' },
-        { front: 'take ___ pride (in)', answer: 'take pride (in)', translation: 'гордиться (чем-то)', tag: 'нулевой артикль' },
-        { front: 'come into ___ contact (with)', answer: 'come into contact (with)', translation: 'вступать в контакт (с)', tag: 'нулевой артикль' },
-        { front: 'free of ___ charge', answer: 'free of charge', translation: 'бесплатно', tag: 'нулевой артикль' },
-        { front: 'from ___ time to time', answer: 'from time to time', translation: 'время от времени', tag: 'нулевой артикль' },
-        { front: 'make ___ appointment', answer: 'make an appointment', translation: 'назначить встречу, записаться', tag: 'неопределённый артикль' },
-        { front: 'in ___ advance', answer: 'in advance', translation: 'заранее', tag: 'нулевой артикль' },
-        { front: 'at ___ present', answer: 'at present', translation: 'в настоящее время', tag: 'нулевой артикль' },
-        { front: 'have ___ fun', answer: 'have fun', translation: 'веселиться', tag: 'нулевой артикль' },
-        { front: 'hand in ___ hand', answer: 'hand in hand', translation: 'рука об руку', tag: 'нулевой артикль' },
-        { front: 'break ___ ice', answer: 'break the ice', translation: 'растопить лёд, начать непринуждённый разговор', tag: 'определённый артикль' }
-    ];
-
-    let phraseDeck = [];
-    let forgottenSet = new Set();
-    let currentPhrase = null;
-
-    const phraseProgressEl = document.getElementById('phrase-progress');
-    const phraseTagEl = document.getElementById('phrase-tag');
-    const phraseFrontEl = document.getElementById('phrase-front-text');
-    const phraseTranslationEl = document.getElementById('phrase-translation');
-    const phraseAnswerEl = document.getElementById('phrase-answer-text');
-    const phraseBtnRow1 = document.getElementById('phrase-btn-row-1');
-    const phraseBtnRow2 = document.getElementById('phrase-btn-row-2');
-    const phraseDoneMsg = document.getElementById('phrase-done-msg');
-
-    function shuffleArr(arr) {
-        const a = arr.slice();
-        for (let i = a.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [a[i], a[j]] = [a[j], a[i]];
-        }
-        return a;
-    }
-
-    function initPhraseDeck() {
-        phraseDeck = shuffleArr(phrasesData.map((p, i) => i));
-        forgottenSet = new Set();
-        renderPhrase();
-    }
-
-    function renderPhrase() {
-        document.getElementById('test-card'); // no-op guard
-        if (phraseDeck.length === 0) {
-            document.querySelector('.phrase-card-inner').classList.add('hidden');
-            phraseDoneMsg.classList.remove('hidden');
-            phraseProgressEl.textContent = 'Осталось повторить: 0';
-            return;
-        }
-        document.querySelector('.phrase-card-inner').classList.remove('hidden');
-        phraseDoneMsg.classList.add('hidden');
-        const idx = phraseDeck[0];
-        currentPhrase = phrasesData[idx];
-        phraseProgressEl.textContent = `Осталось повторить: ${phraseDeck.length}`;
-        phraseTagEl.textContent = currentPhrase.tag;
-        phraseFrontEl.textContent = currentPhrase.front;
-        phraseTranslationEl.textContent = currentPhrase.translation;
-        phraseAnswerEl.textContent = currentPhrase.answer;
-        phraseAnswerEl.classList.remove('shown');
-        phraseBtnRow1.classList.remove('hidden');
-        phraseBtnRow2.classList.add('hidden');
-    }
-
-    document.getElementById('phrase-reveal-btn').addEventListener('click', function () {
-        phraseAnswerEl.classList.add('shown');
-        phraseBtnRow1.classList.add('hidden');
-        phraseBtnRow2.classList.remove('hidden');
-    });
-
-    document.getElementById('phrase-speak-btn').addEventListener('click', function () {
-        if (!currentPhrase) return;
-        window.speechSynthesis.cancel();
-        const u = new SpeechSynthesisUtterance(currentPhrase.answer.replace(/[()]/g, ''));
-        u.lang = 'en-US';
-        window.speechSynthesis.speak(u);
-    });
-
-    document.getElementById('phrase-remembered-btn').addEventListener('click', function () {
-        phraseDeck.shift();
-        renderPhrase();
-    });
-
-    document.getElementById('phrase-forgot-btn').addEventListener('click', function () {
-        const idx = phraseDeck.shift();
-        forgottenSet.add(idx);
-        phraseDeck.push(idx);
-        renderPhrase();
-    });
-
-    function restartPhrases(all) {
-        if (all) {
-            initPhraseDeck();
-        } else {
-            phraseDeck = shuffleArr(Array.from(forgottenSet));
-            if (phraseDeck.length === 0) { initPhraseDeck(); return; }
-            forgottenSet = new Set();
-            renderPhrase();
-        }
-    }
-
-    initPhraseDeck();
-
-    /* ============ WORD SELECTION: LISTEN + ADD TO DICTIONARY ============ */
-    const selPopup = document.getElementById('sel-popup');
-    let pendingSelectionText = '';
-
-    document.addEventListener('mouseup', function (e) {
-        if (selPopup.contains(e.target)) return;
-        setTimeout(() => {
-            const sel = window.getSelection();
-            const text = sel.toString().trim();
-            if (!text || sel.rangeCount === 0) { selPopup.classList.add('hidden'); return; }
-            const anchor = sel.anchorNode;
-            const container = anchor && anchor.nodeType === 3 ? anchor.parentElement : anchor;
-            if (!container || !container.closest('.selectable')) { selPopup.classList.add('hidden'); return; }
-            const cleaned = text.replace(/[^a-zA-Z\s'-]/g, '').trim();
-            if (!cleaned) { selPopup.classList.add('hidden'); return; }
-            pendingSelectionText = cleaned;
-            const range = sel.getRangeAt(0);
-            const rect = range.getBoundingClientRect();
-            selPopup.style.top = (window.scrollY + rect.top - 44) + 'px';
-            selPopup.style.left = (window.scrollX + rect.left) + 'px';
-            selPopup.classList.remove('hidden');
-        }, 10);
-    });
-
-    document.getElementById('sel-speak-btn').addEventListener('click', function () {
-        if (!pendingSelectionText) return;
-        window.speechSynthesis.cancel();
-        const u = new SpeechSynthesisUtterance(pendingSelectionText);
-        u.lang = 'en-US';
-        window.speechSynthesis.speak(u);
-    });
-
-    document.getElementById('sel-add-btn').addEventListener('click', function () {
-        if (!pendingSelectionText) return;
-        addToDictionary(pendingSelectionText);
-        selPopup.classList.add('hidden');
-    });
-
-    /* ============ DICTIONARY ============ */
-    let dictionary = []; // {word, transcription}
-
-    function toggleDictPanel(show) {
-        document.getElementById('dict-panel').classList.toggle('hidden', !show);
-    }
-
-    async function addToDictionary(word) {
-        const key = word.toLowerCase();
-        if (dictionary.some(d => d.word.toLowerCase() === key)) return;
-        const entry = { word: word, transcription: '—' };
-        dictionary.push(entry);
-        renderDict();
-        if (!/\s/.test(word)) {
-            try {
-                const res = await fetch('https://api.dictionaryapi.dev/api/v2/entries/en/' + encodeURIComponent(key));
-                if (res.ok) {
-                    const data = await res.json();
-                    const ph = data[0] && (data[0].phonetic || (data[0].phonetics && data[0].phonetics.find(p => p.text) && data[0].phonetics.find(p => p.text).text));
-                    if (ph) { entry.transcription = ph; renderDict(); }
-                }
-            } catch (err) { /* offline or blocked — leave as — */ }
-        }
-    }
-
-    function renderDict() {
-        document.getElementById('dict-count').textContent = dictionary.length;
-        const listEl = document.getElementById('dict-list');
-        const emptyEl = document.getElementById('dict-empty');
-        const printArea = document.getElementById('dict-print-area');
-        emptyEl.style.display = dictionary.length ? 'none' : 'block';
-        listEl.innerHTML = '';
-        printArea.innerHTML = '';
-        dictionary.forEach((d, i) => {
-            const row = document.createElement('div');
-            row.className = 'dict-entry';
-            row.innerHTML = `<span><span class="w">${d.word}</span> <span class="t">${d.transcription}</span></span>`;
-            const delBtn = document.createElement('button');
-            delBtn.className = 'del';
-            delBtn.textContent = 'убрать';
-            delBtn.onclick = () => { dictionary.splice(i, 1); renderDict(); };
-            row.appendChild(delBtn);
-            listEl.appendChild(row);
-
-            const pRow = document.createElement('div');
-            pRow.className = 'dp-entry';
-            pRow.textContent = `${d.word} — ${d.transcription}`;
-            printArea.appendChild(pRow);
-        });
-    }
-
-    function clearDict() {
-        if (dictionary.length && confirm('Очистить весь словарь?')) { dictionary = []; renderDict(); }
-    }
-
-    function printDict() {
-        if (!dictionary.length) { alert('Словарь пуст.'); return; }
-        toggleDictPanel(true);
-        setTimeout(() => window.print(), 50);
-    }
-
-    function copyDict() {
-        if (!dictionary.length) { alert('Словарь пуст.'); return; }
-        const n = Math.ceil(dictionary.length / 3);
-        const col1 = dictionary.slice(0, n);
-        const col2 = dictionary.slice(n, 2 * n);
-        const col3 = dictionary.slice(2 * n);
-        let lines = [];
-        for (let i = 0; i < n; i++) {
-            const a = col1[i] ? `${col1[i].word} — ${col1[i].transcription}` : '';
-            const b = col2[i] ? `${col2[i].word} — ${col2[i].transcription}` : '';
-            const c = col3[i] ? `${col3[i].word} — ${col3[i].transcription}` : '';
-            lines.push([a, b, c].join('\t'));
-        }
-        const text = lines.join('\n');
-        try {
-            navigator.clipboard.writeText(text).then(() => alert('Скопировано в буфер обмена!'));
-        } catch (err) {
-            const ta = document.createElement('textarea');
-            ta.value = text;
-            document.body.appendChild(ta);
-            ta.select();
-            document.execCommand('copy');
-            document.body.removeChild(ta);
-            alert('Скопировано в буфер обмена!');
-        }
-    }
-
-    renderDict();
-</script>
 </body>
 </html>

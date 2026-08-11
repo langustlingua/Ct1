@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тренажёр: Грамматическая форма (ЦТ/ЦЭ)</title>
+    <style>
+        :root {
+            --primary: #1a73e8; --bg: #f8f9fa; --card: #ffffff; --text: #202124;
+            --success: #34a853; --danger: #ea4335; --border: #dadce0;
+        }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 20px; line-height: 1.6; }
+        .container { max-width: 800px; margin: 0 auto; }
+
+        .tabs { display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; }
+        .tab-btn { flex: 1; min-width: 140px; padding: 12px; border: 1px solid var(--border); background: white; border-radius: 8px; cursor: pointer; font-weight: 500; font-size: 14px; }
+        .tab-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+        .tab-panel.hidden { display: none; }
+
+        details { background: var(--card); padding: 15px 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px; border-left: 4px solid var(--primary); }
+        summary { font-weight: bold; color: var(--primary); cursor: pointer; }
+
+        .theory-intro { font-size: 15px; margin-bottom: 20px; color: #444; text-align: justify; }
+        .theory-cards { display: flex; flex-direction: column; gap: 14px; margin-bottom: 20px; }
+        .theory-card { display: grid; grid-template-columns: 56px 1fr; gap: 16px; padding: 16px 18px; border-radius: 10px; background: #fafbfc; border: 1px solid var(--border); border-left-width: 5px; }
+        .theory-card .num { display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: bold; color: white; border-radius: 8px; height: 40px; align-self: start; }
+        .theory-card h4 { margin: 0 0 6px 0; font-size: 15px; }
+        .theory-card p { margin: 0 0 8px 0; font-size: 14px; color: #333; }
+        .theory-card .ex { font-size: 13px; background: white; border: 1px dashed var(--border); border-radius: 6px; padding: 8px 10px; }
+        .theory-card .ex em { color: #444; }
+        .ex-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+        .ex-list li { background: white; border: 1px dashed var(--border); border-radius: 6px; padding: 8px 10px; font-size: 13px; }
+        .ex-list li::before { content: "→ "; color: var(--primary); font-weight: bold; }
+        .ex-list li em { color: #444; font-style: normal; font-weight: 600; }
+        .wrong-ex { color: var(--danger); text-decoration: line-through; text-decoration-thickness: 2px; font-weight: 600; }
+        .rule-list { display: flex; flex-direction: column; gap: 8px; margin: 0 0 12px 0; }
+        .rule-line { font-size: 14px; color: #333; padding-left: 16px; position: relative; }
+        .rule-line::before { content: "▸"; position: absolute; left: 0; color: var(--primary); font-weight: bold; }
+        .rule-line strong { color: var(--primary); }
+        .theory-card.t1 { border-left-color: #1a73e8; } .theory-card.t1 .num { background: #1a73e8; }
+        .theory-card.t2 { border-left-color: #34a853; } .theory-card.t2 .num { background: #34a853; }
+        .theory-card.t3 { border-left-color: #9c27b0; } .theory-card.t3 .num { background: #9c27b0; }
+        .theory-card.t4 { border-left-color: #f9902b; } .theory-card.t4 .num { background: #f9902b; }
+        .theory-exam-tip { background: #e8f0fe; border: 1px solid var(--primary); border-radius: 10px; padding: 14px 18px; font-size: 14px; margin-bottom: 20px; }
+        .theory-exam-tip strong { color: var(--primary); }
+        .signal-title { margin-bottom: 12px; }
+        .signal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        @media (max-width: 600px) { .signal-grid { grid-template-columns: 1fr; } }
+        .signal-row { background: white; border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; display: flex; flex-direction: column; gap: 4px; }
+        .signal-cue { font-size: 13px; color: #555; }
+        .signal-cue em { color: var(--primary); font-style: normal; font-weight: 600; }
+        .signal-arrow { font-size: 13px; color: #888; }
+        .signal-topic { font-size: 14px; font-weight: 600; color: #202124; }
+
+        .card { background: var(--card); border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); padding: 30px; margin-bottom: 20px; }
+        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-bottom: 20px; }
+        .task-id { font-weight: bold; color: var(--primary); }
+        .score { font-size: 14px; padding: 5px 12px; border: 1px solid var(--border); border-radius: 20px; }
+
+        .question-text { font-size: 16px; margin-bottom: 25px; text-align: justify; }
+        .blank { display: inline-block; min-width: 30px; border-bottom: 2px solid var(--primary); color: var(--primary); font-weight: bold; padding: 0 5px; text-decoration: underline; text-underline-offset: 4px; }
+
+        .options-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 25px; }
+        .option-item { padding: 12px 16px; border: 1px solid var(--border); border-radius: 8px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 10px; }
+        .option-item:hover { background: #f1f3f4; }
+        .option-item.selected { border-color: var(--primary); background: #e8f0fe; }
+        .option-item.correct { border-color: var(--success); background: #e6f4ea; }
+        .option-item.wrong { border-color: var(--danger); background: #fce8e6; }
+        .option-item input[type="radio"] { accent-color: var(--primary); transform: scale(1.2); }
+
+        .action-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; border-top: 1px solid var(--border); padding-top: 20px; }
+        .btn { padding: 10px 20px; border: none; border-radius: 6px; font-weight: 500; cursor: pointer; transition: 0.2s; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { opacity: 0.9; }
+        .btn-outline { background: white; border: 1px solid var(--border); color: var(--text); }
+        .btn-outline:hover { background: #f1f3f4; }
+        .btn-success { background: var(--success); color: white; }
+        .btn-danger { background: var(--danger); color: white; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .nav-group { display: flex; gap: 10px; }
+
+        .feedback { margin-top: 20px; padding: 15px; border-radius: 6px; display: none; }
+        .feedback.correct { display: block; background: #e6f4ea; border: 1px solid var(--success); }
+        .feedback.wrong { display: block; background: #fce8e6; border: 1px solid var(--danger); }
+        .feedback h4 { margin: 0 0 5px 0; }
+        .feedback .explanation { margin-top: 10px; font-size: 14px; color: #555; }
+
+        .hidden { display: none; }
+        .text-center { text-align: center; }
+        .mt-10 { margin-top: 10px; }
+
+        .jump-nav { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
+
+        .mistakes-bar { display: flex; justify-content: flex-end; margin-bottom: 12px; }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 980; display: flex; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; }
+        .modal-overlay.hidden { display: none; }
+        .modal-box { background: white; border-radius: 12px; padding: 24px; max-width: 720px; width: 100%; max-height: 85vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.3); }
+        .modal-box h3 { margin-top: 0; }
+        .mistakes-summary { font-size: 14px; color: #555; margin-bottom: 14px; }
+        .mistake-item { background: #fce8e6; border: 1px solid var(--danger); border-radius: 8px; padding: 12px 14px; margin-bottom: 10px; font-size: 13px; }
+        .mistake-item .mq { font-weight: 600; margin-bottom: 6px; }
+        .mistake-item .ma { color: #555; }
+        .prompt-textarea { width: 100%; box-sizing: border-box; min-height: 260px; font-family: monospace; font-size: 13px; padding: 12px; border: 1px solid var(--border); border-radius: 8px; margin-top: 14px; }
+        .modal-actions { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
+        .pause-banner { background: #fff3e0; border: 1px solid #f9902b; border-radius: 10px; padding: 16px 18px; margin-bottom: 20px; font-size: 14px; }
+        .pause-banner strong { color: #c96a00; }
+        .jump-btn { width: 32px; height: 32px; border-radius: 6px; border: 1px solid var(--border); background: white; cursor: pointer; font-size: 12px; display: flex; align-items: center; justify-content: center; }
+        .jump-btn.done-correct { background: #e6f4ea; border-color: var(--success); }
+        .jump-btn.done-wrong { background: #fce8e6; border-color: var(--danger); }
+        .jump-btn.current { outline: 2px solid var(--primary); }
+
+        .phrase-progress { font-size: 14px; color: #555; margin-bottom: 14px; }
+        .phrase-card-inner { text-align: center; padding: 10px 0; }
+        .phrase-front { font-size: 20px; font-weight: 600; margin-bottom: 10px; }
+        .phrase-translation { font-size: 14px; color: #666; margin-bottom: 20px; }
+        .phrase-answer { display: none; font-size: 17px; background: #e6f4ea; border: 1px solid var(--success); border-radius: 8px; padding: 14px; margin-bottom: 20px; text-align: left; }
+        .phrase-answer.shown { display: block; }
+        .phrase-type-tag { display: inline-block; font-size: 12px; padding: 3px 10px; border-radius: 12px; background: #f1f3f4; color: #555; margin-bottom: 10px; }
+        .phrase-btn-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+        .phrase-done-msg { text-align: center; padding: 30px 0; }
+
+        .sel-popup { position: absolute; z-index: 999; background: #202124; border-radius: 8px; padding: 6px; display: flex; gap: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+        .sel-popup.hidden { display: none; }
+        .sel-popup button { background: transparent; border: none; color: white; font-size: 15px; padding: 6px 10px; cursor: pointer; border-radius: 4px; }
+        .sel-popup button:hover { background: rgba(255,255,255,0.15); }
+        .selectable { user-select: text; }
+
+        .dict-fab { position: fixed; bottom: 20px; right: 20px; background: var(--primary); color: white; border: none; border-radius: 30px; padding: 12px 18px; font-size: 14px; font-weight: 600; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.25); z-index: 900; }
+        .dict-panel { position: fixed; top: 0; right: 0; height: 100%; width: min(420px, 100%); background: white; box-shadow: -4px 0 20px rgba(0,0,0,0.15); z-index: 950; padding: 20px; box-sizing: border-box; overflow-y: auto; }
+        .dict-panel.hidden { display: none; }
+        .dict-panel h3 { margin-top: 0; }
+        .dict-close { position: absolute; top: 16px; right: 16px; background: none; border: none; font-size: 20px; cursor: pointer; }
+        .dict-empty { color: #888; font-size: 14px; margin-top: 20px; }
+        .dict-list { margin-top: 16px; }
+        .dict-entry { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
+        .dict-entry .w { font-weight: 600; }
+        .dict-entry .t { color: #777; font-size: 13px; }
+        .dict-entry .del { background: none; border: none; color: var(--danger); cursor: pointer; font-size: 13px; }
+        .dict-actions { display: flex; gap: 8px; margin-top: 18px; flex-wrap: wrap; }
+        .dict-print-area { column-count: 3; column-gap: 24px; margin-top: 16px; }
+        .dict-print-area .dp-entry { font-size: 13px; margin-bottom: 6px; break-inside: avoid; }
+
+        @media print {
+            body * { visibility: hidden; }
+            .dict-panel, .dict-panel * { visibility: visible; }
+            .dict-panel { position: absolute; top: 0; left: 0; width: 100%; height: auto; box-shadow: none; }
+            .dict-actions, .dict-close { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2 style="text-align:center; color:var(--primary);">РЕШУ ЦТ и ЦЭ</h2>
+    <h3 style="text-align:center; margin-top:-10px;">Английский язык | Выбор правильной грамматической формы</h3>
+
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="test" onclick="switchTab('test')">📝 Тест (67 заданий)</button>
+        <button class="tab-btn" data-tab="phrases" onclick="switchTab('phrases')">🧠 Паттерны на память</button>
+    </div>
+
+    <div id="tab-test" class="tab-panel">
+
+    <details open>
+        <summary>📖 Грамматика: 4 темы этого блока</summary>
+        <div class="theory-intro">В этом блоке РЕШУ смешивает четыре разные темы под одной формулировкой «выберите правильную форму». Это специально — на экзамене вы не знаете заранее, какая тема попадётся, поэтому нужно уметь быстро определять тип задания по внешним признакам.</div>
+
+        <div class="theory-cards">
+            <div class="theory-card t1">
+                <div class="num">1</div>
+                <div>
+                    <h4>Сравнительная и превосходная степень</h4>
+                    <div class="rule-list">
+                        <div class="rule-line"><strong>Признак сравнительной степени:</strong> в предложении есть <em>than</em>.</div>
+                        <div class="rule-line"><strong>Признак превосходной степени:</strong> уточнение вроде <em>in the world / of which / ever</em>.</div>
+                        <div class="rule-line"><strong>Короткие прилагательные</strong> (1 слог, часть двусложных): <em>-er / -est</em> — cheap → cheaper.</div>
+                        <div class="rule-line"><strong>Длинные прилагательные</strong> (3+ слога, многие двусложные): <em>more / most</em> — sensible → more sensible.</div>
+                        <div class="rule-line"><strong>Усилители:</strong> much, far, a lot. Слово <em>very</em> с сравнительной степенью не употребляется.</div>
+                    </div>
+                    <ul class="ex-list selectable">
+                        <li><em>much cheaper</em></li>
+                        <li><em>far deeper</em></li>
+                        <li><em>a lot cheaper</em></li>
+                        <li><em>the luckiest</em> (in the world)</li>
+                        <li><em>the smallest</em> (of which)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="theory-card t2">
+                <div class="num">2</div>
+                <div>
+                    <h4>Герундий или инфинитив после глагола</h4>
+                    <div class="rule-list">
+                        <div class="rule-line"><strong>mind doing</strong> — возражать против чего-то. Всегда -ing.</div>
+                        <div class="rule-line"><strong>stop doing</strong> — прекратить делать что-то регулярное. -ing.</div>
+                        <div class="rule-line"><strong>remember to do</strong> — не забыть сделать что-то в будущем. To-infinitive.</div>
+                        <div class="rule-line"><strong>regret doing</strong> — жалеть о том, что уже сделал. -ing, действие в прошлом.</div>
+                    </div>
+                    <ul class="ex-list selectable">
+                        <li><em>I don't mind waiting</em></li>
+                        <li><em>I've stopped buying petrol</em></li>
+                        <li><em>Remember to leave the key</em></li>
+                        <li><em>I regret buying these shoes</em></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="theory-card t3">
+                <div class="num">3</div>
+                <div>
+                    <h4>Притяжательный падеж (апостроф 's)</h4>
+                    <div class="rule-list">
+                        <div class="rule-line"><strong>Составное существительное</strong> (brother-in-law, passer-by, commander-in-chief): апостроф к последнему слову всего сочетания — <em>brother-in-law's</em>, не <span class="wrong-ex">brother's-in-law</span>.</div>
+                        <div class="rule-line"><strong>Один общий предмет</strong> у двух людей: 's только после второго имени — <em>Mark and Helen's project</em>.</div>
+                        <div class="rule-line"><strong>У каждого своё</strong> (поведение, мнение): 's после каждого имени — <em>Tom's and Peter's behaviour</em>.</div>
+                    </div>
+                    <ul class="ex-list selectable">
+                        <li><em>father-in-law's</em></li>
+                        <li><em>Mark and Helen's project</em> (общий)</li>
+                        <li><em>Eric's and Mark's behaviour</em> (у каждого своё)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="theory-card t4">
+                <div class="num">4</div>
+                <div>
+                    <h4>Числительные и возраст</h4>
+                    <div class="rule-list">
+                        <div class="rule-line"><strong>a hundred / a thousand</strong> + сущ., без <em>of</em>: <em>a hundred restaurants</em>.</div>
+                        <div class="rule-line"><strong>hundreds of / thousands of</strong> — множественное число с <em>of</em>, если количество не точное.</div>
+                        <div class="rule-line"><strong>Десятилетие возраста</strong> — множественное число без апострофа: <em>in his sixties, in her forties</em>.</div>
+                        <div class="rule-line"><strong>Век</strong> — порядковое числительное: <em>the sixteenth century</em>.</div>
+                    </div>
+                    <ul class="ex-list selectable">
+                        <li><em>a hundred restaurants</em></li>
+                        <li><em>a thousand thanks</em></li>
+                        <li><em>in his late sixties</em></li>
+                        <li><em>the sixteenth century</em></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="theory-exam-tip">
+            <div class="signal-title">🎯 <strong>Как узнавать тип на экзамене:</strong></div>
+            <div class="signal-grid">
+                <div class="signal-row">
+                    <div class="signal-cue">Есть <em>than</em> или превосходное уточнение (in the world, of which...)</div>
+                    <div class="signal-arrow">↓</div>
+                    <div class="signal-topic">Степень сравнения</div>
+                </div>
+                <div class="signal-row">
+                    <div class="signal-cue">Перед пропуском стоит <em>mind / stop / remember / regret</em></div>
+                    <div class="signal-arrow">↓</div>
+                    <div class="signal-topic">Герундий или инфинитив</div>
+                </div>
+                <div class="signal-row">
+                    <div class="signal-cue">Два имени перед существительным</div>
+                    <div class="signal-arrow">↓</div>
+                    <div class="signal-topic">Притяжательный падеж</div>
+                </div>
+                <div class="signal-row">
+                    <div class="signal-cue">Слово вроде <em>hundred / thousand</em> или указание на возраст/век</div>
+                    <div class="signal-arrow">↓</div>
+                    <div class="signal-topic">Числительное</div>
+                </div>
+            </div>
+        </div>
+    </details>
+
+    <div class="mistakes-bar">
+        <button class="btn btn-outline" onclick="openMistakesModal()">📋 Промпт по ошибкам для ChatGPT</button>
+        <button class="btn btn-danger" onclick="finishTestNow()">🏁 Закончить тест</button>
+    </div>
+
+    <div class="pause-banner hidden" id="pause-banner">
+        ⏸️ <strong><span id="pause-banner-title">Тест приостановлен:</span></strong> <span id="pause-banner-text"></span> <span id="pause-banner-hint">Изучите промпт в открывшемся окне, потом нажмите «Продолжить тест».</span>
+    </div>
+
+    <div class="jump-nav" id="jump-nav"></div>
+
+    <div class="card" id="test-card">
+        <div class="header">
+            <span class="task-id">Задание № <span id="current-id">1</span></span>
+            <span class="score" id="score-display">Решено: 0 / 67</span>
+        </div>
+        <div class="question-text selectable" id="question-text">Загрузка...</div>
+        <div class="options-list" id="options-container"></div>
+        <div class="feedback" id="feedback">
+            <h4 id="fb-title"></h4>
+            <div id="fb-explanation" class="explanation"></div>
+        </div>
+        <div class="action-row">
+            <div class="nav-group">
+                <button class="btn btn-outline" onclick="prevTask()" id="prev-btn">← Пред.</button>
+                <button class="btn btn-outline" onclick="nextTask()" id="next-btn">След. →</button>
+            </div>
+            <div>
+                <button class="btn btn-primary" onclick="checkAnswer()" id="check-btn">Проверить</button>
+                <button class="btn btn-outline hidden" onclick="showAnswer()" id="show-btn">Показать ответ</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mt-10" id="complete-msg" style="display:none; color:var(--primary); font-weight:bold; font-size:18px;">
+        🎉 Вы прошли все задания!
+    </div>
+    </div>
+
+    <div class="modal-overlay hidden" id="mistakes-modal">
+        <div class="modal-box">
+            <h3>📋 Промпт по ошибкам для ChatGPT</h3>
+            <div class="mistakes-summary" id="mistakes-summary">—</div>
+            <div id="mistakes-list"></div>
+            <textarea class="prompt-textarea" id="mistakes-prompt-text" readonly></textarea>
+            <div class="modal-actions">
+                <button class="btn btn-primary" onclick="copyMistakesPrompt()">📋 Скопировать промпт</button>
+                <button class="btn btn-success hidden" id="resume-test-btn" onclick="resumeTest()">▶️ Продолжить тест</button>
+                <button class="btn btn-outline" onclick="closeMistakesModal()">Закрыть</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="tab-phrases" class="tab-panel hidden">
+        <div class="card">
+            <p style="margin-top:0; color:#555; font-size:14px;">Устойчивые грамматические паттерны из этого блока. Их не выводят логически — их запоминают как готовые конструкции.</p>
+            <div class="phrase-progress" id="phrase-progress">Осталось повторить: —</div>
+            <div class="phrase-card-inner">
+                <div class="phrase-type-tag" id="phrase-tag">—</div>
+                <div class="phrase-front selectable" id="phrase-front-text">—</div>
+                <div class="phrase-translation" id="phrase-translation">—</div>
+                <div class="phrase-answer selectable" id="phrase-answer-text">—</div>
+                <div class="phrase-btn-row" id="phrase-btn-row-1">
+                    <button class="btn btn-outline" id="phrase-speak-btn">🔊 Прослушать</button>
+                    <button class="btn btn-primary" id="phrase-reveal-btn">Показать ответ</button>
+                </div>
+                <div class="phrase-btn-row hidden" id="phrase-btn-row-2" style="margin-top:14px;">
+                    <button class="btn btn-danger" id="phrase-forgot-btn">😕 Забыл</button>
+                    <button class="btn btn-success" id="phrase-remembered-btn">✅ Помню</button>
+                </div>
+            </div>
+            <div class="phrase-done-msg hidden" id="phrase-done-msg">
+                <p style="font-size:18px; font-weight:600; color:var(--success);">🎉 Все паттерны повторены!</p>
+                <button class="btn btn-outline" onclick="restartPhrases(false)">Повторить только те, что забыл</button>
+                <button class="btn btn-primary" onclick="restartPhrases(true)">Начать заново все</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="sel-popup hidden" id="sel-popup">
+    <button id="sel-speak-btn" title="Прослушать">🔊</button>
+    <button id="sel-add-btn" title="Добавить в словарь">➕ В словарь</button>
+</div>
+
+<button class="dict-fab" id="dict-fab" onclick="toggleDictPanel(true)">📖 Словарь (<span id="dict-count">0</span>)</button>
+
+<div class="dict-panel hidden" id="dict-panel">
+    <button class="dict-close" onclick="toggleDictPanel(false)">✕</button>
+    <h3>📖 Мой словарь</h3>
+    <div class="dict-empty" id="dict-empty">Пока пусто. Выделите любое слово в тексте выше и нажмите «➕ В словарь».</div>
+    <div class="dict-list" id="dict-list"></div>
+    <div class="dict-actions">
+        <button class="btn btn-primary" onclick="printDict()">🖨️ Печать (3 колонки)</button>
+        <button class="btn btn-outline" onclick="copyDict()">📋 Скопировать</button>
+        <button class="btn btn-outline" onclick="clearDict()">🗑️ Очистить</button>
+    </div>
+    <div class="dict-print-area" id="dict-print-area"></div>
+</div>
+
+<script>
+    const tasks = [
+        { topic: 'comparative', text: 'When I was young people were <span class="blank">___</span> than they are now.', options: ['the most polite', 'more politer', 'the most politest', 'more polite', 'polite'], correct: 4, explanation: 'После пропуска стоит than — нужна сравнительная степень: more polite.' },
+        { topic: 'comparative', text: 'Ellie always looks worried. She is <span class="blank">___</span> than her friends.', options: ['anxious', 'more anxious', 'most anxious', 'the most anxious', 'more anxiouser'], correct: 2, explanation: 'than требует сравнительной степени многосложного прилагательного: more anxious.' },
+        { topic: 'comparative', text: 'Jason survived the plane crash. He’s <span class="blank">___</span> man in the world.', options: ['lucky', 'more luckier', 'the most luckiest', 'the luckiest', 'luckier'], correct: 4, explanation: 'Уточнение "in the world" требует превосходной степени: the luckiest.' },
+        { topic: 'comparative', text: 'There are three types of anteaters, <span class="blank">___</span> of which live entirely in trees.', options: ['the smallest', 'most smaller', 'the most smallest', 'more smallest', 'more smaller'], correct: 1, explanation: 'По смыслу и конструкции нужна превосходная степень: the smallest.' },
+        { topic: 'comparative', text: 'Riding a motorbike is <span class="blank">___</span> dangerous than driving a car.', options: ['far most', 'far more', 'the most', 'most'], correct: 2, explanation: 'than + сравнительная степень (more dangerous), far усиливает её без изменения смысла.' },
+        { topic: 'comparative', text: 'You\'ll need <span class="blank">___</span> shoes for walking around the city.', options: ['far comfortably', 'far more comfortabler', 'far much comfortable', 'much more comfortable'], correct: 4, explanation: 'comfortable — многосложное, сравнительная степень с more; much усиливает её.' },
+        { topic: 'comparative', text: 'This piece of equipment is <span class="blank">___</span> to run than the electric one.', options: ['far cheapest', 'much cheaper', 'far more cheaper', 'more cheaper'], correct: 2, explanation: 'cheap — односложное, сравнительная степень cheaper; much усиливает.' },
+        { topic: 'comparative', text: 'Cost-cutting has led to a <span class="blank">___</span> quality of service.', options: ['far low', 'much lower', 'far more lower', 'much more lower'], correct: 2, explanation: 'low — односложное, сравнительная степень lower; much усиливает.' },
+        { topic: 'possessive', text: 'My <span class="blank">___</span> sister Jane is coming with us to the exhibition on Saturday afternoon.', options: ['brother-in-law', 'brother\'s-in-law', 'brother-in-law\'s', 'brother\'s-in-law\'s'], correct: 3, explanation: 'Апостроф в составном существительном ставится к последнему слову: brother-in-law\'s.' },
+        { topic: 'gerund_infinitive', text: 'I don\'t mind <span class="blank">___</span>. Do not worry, take your time!', options: ['wait', 'to wait', 'waiting', 'waited'], correct: 3, explanation: 'mind doing something — всегда -ing форма.' },
+        { topic: 'gerund_infinitive', text: 'If you don\'t mind <span class="blank">___</span> a few minutes, we can check our records for you.', options: ['to wait', 'wait', 'waiting', 'waited'], correct: 3, explanation: 'mind doing something — -ing форма.' },
+        { topic: 'gerund_infinitive', text: 'I don\'t mind <span class="blank">___</span> with friends about singers and actors and what they are up to.', options: ['gossiping', 'gossip', 'to gossip', 'gossiped'], correct: 1, explanation: 'mind -ing something — -ing форма.' },
+        { topic: 'gerund_infinitive', text: 'He said he wouldn\'t mind <span class="blank">___</span> a room with another student.', options: ['to share', 'share', 'sharing', 'shared'], correct: 3, explanation: 'mind doing something — -ing форма.' },
+        { topic: 'gerund_infinitive', text: 'I really regret <span class="blank">___</span> these expensive shoes. They hurt my feet!', options: ['to buy', 'buy', 'buying', 'bought'], correct: 3, explanation: 'regret + -ing — сожалеть о том, что уже сделал: regret buying.' },
+        { topic: 'possessive', text: 'What Becky needs to do right now is to find out her... <span class="blank">___</span> opinion on the issue.', options: ['father-in-law', 'father\'s-in-law', 'father-in-law\'s', 'father\'s-in-law\'s'], correct: 3, explanation: 'Апостроф к последнему слову составного существительного: father-in-law\'s.' },
+        { topic: 'possessive', text: 'I was really shocked to hear this frightening story from my <span class="blank">___</span> close friend.', options: ['brother-in-law', 'brother\'s-in-law', 'brother-in-law\'s', 'brother\'s-in-law\'s'], correct: 3, explanation: 'Апостроф к последнему слову: brother-in-law\'s.' },
+        { topic: 'possessive', text: 'Emily hoped that nothing would keep her from coming to her <span class="blank">___</span> wedding in June.', options: ['sister-in-law', 'sister\'s-in-law', 'sister-in-law\'s', 'sister\'s-in-law\'s'], correct: 3, explanation: 'Апостроф к последнему слову: sister-in-law\'s.' },
+        { topic: 'comparative', text: 'I tried to make my voice sound <span class="blank">___</span> when I answered the phone.', options: ['far more deeper', 'far deeper', 'much more deeper', 'far much deeper'], correct: 2, explanation: 'deep — односложное, сравнительная степень deeper; far усиливает.' },
+        { topic: 'comparative', text: 'Children can write the capital letters <span class="blank">___</span> than the small letters.', options: ['far more easilier', 'much more easily', 'more easilier', 'far much easily'], correct: 2, explanation: 'easily — наречие, сравнительная степень more easily; much усиливает.' },
+        { topic: 'comparative', text: 'There must be a <span class="blank">___</span> way to do that.', options: ['more easier', 'far much easier', 'much easier', 'far more easier'], correct: 3, explanation: 'easy → easier (двусложное на -y); much усиливает.' },
+        { topic: 'comparative', text: 'Children can often do puzzles <span class="blank">___</span> than adults.', options: ['much more easilier', 'much more easily', 'far much easilier', 'far much easily'], correct: 2, explanation: 'easily → more easily; much усиливает.' },
+        { topic: 'comparative', text: 'People are <span class="blank">___</span> about what and how much they drink these days.', options: ['far much sensible', 'far more sensible', 'much more sensibly', 'much more sensiblier'], correct: 2, explanation: 'sensible — многосложное, more sensible; far усиливает.' },
+        { topic: 'comparative', text: 'The company\'s annual report showed that sales figures were <span class="blank">___</span> than they had expected.', options: ['far more lower', 'much more lower', 'far lowest', 'much lower'], correct: 4, explanation: 'low → lower; much усиливает.' },
+        { topic: 'comparative', text: 'This area has become considerably more crowded and <span class="blank">___</span> in the last ten years.', options: ['a lot more noisier', 'far noisier', 'most noisier', 'much most noisy'], correct: 2, explanation: 'noisy → noisier (двусложное на -y); far усиливает.' },
+        { topic: 'comparative', text: 'Richard is <span class="blank">___</span> now that he\'s got a permanent job.', options: ['much happier', 'far most happy', 'much most happy', 'far more happier'], correct: 1, explanation: 'happy → happier; much усиливает, единственный грамматически верный вариант.' },
+        { topic: 'comparative', text: 'This apartment has spacious rooms with <span class="blank">___</span> ceilings.', options: ['far more higher', 'much highlier', 'far highest', 'much higher'], correct: 4, explanation: 'high → higher; much усиливает.' },
+        { topic: 'comparative', text: 'It may be my imagination but this exam paper seems <span class="blank">___</span> than the last year\'s one.', options: ['far more harder', 'much harder', 'much hardlier', 'far hardly'], correct: 2, explanation: 'hard → harder; much усиливает, единственный верный вариант.' },
+        { topic: 'comparative', text: 'This time we found it <span class="blank">___</span> to get used to living in a foreign country.', options: ['much hardest', 'much harder', 'far hardlier', 'far more hardlier'], correct: 2, explanation: 'Сравнение с прошлым разом — сравнительная степень: much harder.' },
+        { topic: 'comparative', text: 'The Safari park was a bit of a disappointment as there were <span class="blank">___</span> animals than we had expected.', options: ['much few', 'far fewest', 'much more fewer', 'much fewer'], correct: 4, explanation: 'than требует сравнительной степени few → fewer; much усиливает.' },
+        { topic: 'comparative', text: 'After several minutes of aerobic exercise, breathing continues to rise but at a... <span class="blank">___</span> rate.', options: ['much more slower', 'much slower', 'more slower', 'most slowest'], correct: 2, explanation: 'slow → slower (не требует more); much усиливает.' },
+        { topic: 'comparative', text: 'Copper is... <span class="blank">___</span> than gold and therefore it is widely used for carrying electricity.', options: ['a lot more cheaper', 'the most cheapest', 'a lot cheaper', 'more cheaper'], correct: 3, explanation: 'cheap → cheaper (не требует more); a lot усиливает.' },
+        { topic: 'comparative', text: 'Don’t underestimate his abilities — he’s <span class="blank">___</span> than you think.', options: ['much more smarter', 'much smarter', 'the most smartest', 'more smarter'], correct: 2, explanation: 'smart → smarter (не требует more); much усиливает.' },
+        { topic: 'comparative', text: 'I think you should be... <span class="blank">___</span> and say exactly what you think.', options: ['more honest', 'the most honest', 'a lot honester', 'much honest'], correct: 1, explanation: 'honest — многосложное, сравнительная степень: more honest.' },
+        { topic: 'comparative', text: 'Let’s talk about something... <span class="blank">___</span> — this subject is depressing.', options: ['more serious', 'less serious', 'the least serious', 'the most serious'], correct: 2, explanation: 'Тема угнетающая — предлагается что-то менее серьёзное: less serious.' },
+        { topic: 'comparative', text: 'The situation is <span class="blank">___</span> now and there isn’t an easy solution.', options: ['less complicated', 'much complicated', 'more complicated', 'the most complicated'], correct: 3, explanation: 'Ситуация сложнее и решения нет — сравнительная степень: more complicated.' },
+        { topic: 'comparative', text: 'I’d rather take the assistant manager’s position, which offers <span class="blank">___</span> pay.', options: ['much better', 'more better', 'most good', 'much more better'], correct: 1, explanation: 'better — уже сравнительная степень good, more не добавляется: much better.' },
+        { topic: 'comparative', text: 'Jack will never succeed in reaching the other runners because he’s <span class="blank">___</span> than they are.', options: ['much slower', 'most slowest', 'more slower', 'much more slower'], correct: 1, explanation: 'slow → slower (не требует more); much усиливает.' },
+        { topic: 'numerals', text: 'This food company supplies almost <span class="blank">___</span> restaurants in Paris.', options: ['a hundred', 'hundred', 'hundreds', 'hundred of', 'hundredth'], correct: 1, explanation: 'a hundred + существительное, без of: a hundred restaurants.' },
+        { topic: 'numerals', text: '<span class="blank">___</span> thanks for your kindness to me. One day I will pay you back.', options: ['A thousand', 'A thousands', 'Thousands', 'Thousand of', 'Thousandth'], correct: 1, explanation: 'a thousand thanks — устойчивое выражение с неопр. артиклем.' },
+        { topic: 'numerals', text: 'My dad in his late <span class="blank">___</span> did hardly any exercise and didn’t have a particularly healthy diet.', options: ['sixty\'s', 'sixtieth', 'sixty', 'sixties\'', 'sixties'], correct: 5, explanation: 'Возраст-десятилетие — множественное число без апострофа: in his late sixties.' },
+        { topic: 'numerals', text: 'I worked as a lawyer until I was in my <span class="blank">___</span> but I’ve been a director of charity for ten years now.', options: ['forty\'s', 'fortieth', 'forties', 'forty', 'forties\''], correct: 3, explanation: 'Возраст-десятилетие — множественное число без апострофа: in my forties.' },
+        { topic: 'possessive', text: '<span class="blank">___</span> good behaviour didn\'t last long.', options: ['Tom and Peter', 'Tom\'s and Peter', 'Tom and Peter\'s', 'Tom\'s and Peter\'s'], correct: 4, explanation: 'Поведение у каждого своё — апостроф после каждого имени: Tom\'s and Peter\'s.' },
+        { topic: 'possessive', text: 'There was my <span class="blank">___</span> collection of vases on every shelf.', options: ['mother\'s-in-law\'s', 'mother\'s-in-law', 'mother-in-law', 'mother-in-law\'s'], correct: 4, explanation: 'Апостроф к последнему слову составного существительного: mother-in-law\'s.' },
+        { topic: 'possessive', text: 'None of the staff members supported <span class="blank">___</span> project.', options: ['Mark and Helen\'s', 'Mark\'s and Helen\'s', 'Mark and Helen', 'Mark\'s and Helen'], correct: 1, explanation: 'Один общий проект — \'s только после последнего имени: Mark and Helen\'s.' },
+        { topic: 'gerund_infinitive', text: 'He never stops <span class="blank">___</span> me text messages, which is really annoying.', options: ['to send', 'sent', 'send', 'sending'], correct: 4, explanation: 'stop doing something — -ing форма: sending.' },
+        { topic: 'gerund_infinitive', text: 'When you go out, remember <span class="blank">___</span> the key with your neighbour because I haven\'t got one.', options: ['to leave', 'left', 'leave', 'leaving'], correct: 1, explanation: 'remember to do — будущее действие, to-infinitive: to leave.' },
+        { topic: 'gerund_infinitive', text: 'I\'ve stopped <span class="blank">___</span> petrol because I\'ve sold my car.', options: ['to buy', 'bought', 'buy', 'buying'], correct: 4, explanation: 'stop doing something — -ing форма: buying.' },
+        { topic: 'possessive', text: 'We asked for <span class="blank">___</span> opinions about the Olympics.', options: ['Andrew and Eva\'s', 'Andrew and Eva', 'Andrew\'s and Eva', 'Andrew\'s and Eva\'s'], correct: 4, explanation: 'Мнения у каждого свои — апостроф после каждого имени.' },
+        { topic: 'possessive', text: 'Did you receive <span class="blank">___</span> wedding announcement in the mail today?', options: ['Tony\'s and Tina\'s', 'Tony and Tina\'s', 'Tony\'s and Tina', 'Tony and Tina'], correct: 2, explanation: 'Свадьба общая для обоих — апостроф только после второго имени.' },
+        { topic: 'possessive', text: 'Many board members said they had no opinion on <span class="blank">___</span> proposal.', options: ['John and Harry\'s', 'John\'s and Harry\'s', 'John and Harry', 'John\'s and Harry'], correct: 1, explanation: 'Предложение общее — апостроф только после последнего имени.' },
+        { topic: 'possessive', text: 'They thought <span class="blank">___</span> behaviour was very unfriendly.', options: ['Eric and Mark\'s', 'Eric\'s and Mark', 'Eric\'s and Mark\'s', 'Eric and Mark'], correct: 3, explanation: 'Поведение у каждого своё — апостроф после каждого имени.' },
+        { topic: 'possessive', text: 'He couldn\'t memorise his <span class="blank">___</span> explanation of how to play cricket.', options: ['father-in-law', 'father\'s-in-law\'s', 'father\'s-in-law', 'father-in-law\'s'], correct: 4, explanation: 'Апостроф к последнему слову составного существительного.' },
+        { topic: 'possessive', text: 'My <span class="blank">___</span> four-bedroom house is in Brighton.', options: ['brother-in-law\'s', 'brother-in-law', 'brother\'s-in-law', 'brother\'s-in-law\'s'], correct: 1, explanation: 'Апостроф к последнему слову составного существительного.' },
+        { topic: 'possessive', text: 'The doctor was puzzled by my <span class="blank">___</span> symptoms and ordered several further tests to be done.', options: ['brother-in-law\'s', 'brother-in-law', 'brother\'s-in-law', 'brother\'s-in-law\'s'], correct: 1, explanation: 'Апостроф к последнему слову составного существительного.' },
+        { topic: 'possessive', text: 'My <span class="blank">___</span> ambition is to become a chef in one of the big hotels.', options: ['brother-in-law\'s', 'brother-in-law', 'brother\'s-in-law', 'brother\'s-in-law\'s'], correct: 1, explanation: 'Апостроф к последнему слову составного существительного.' },
+        { topic: 'possessive', text: 'They thought <span class="blank">___</span> behaviour was perfectly normal.', options: ['Helen and Sarah\'s', 'Helen\'s and Sarah', 'Helen\'s and Sarah\'s', 'Helen and Sarah'], correct: 3, explanation: 'Поведение у каждой своё — апостроф после каждого имени.' },
+        { topic: 'possessive', text: '<span class="blank">___</span> behaviour towards their family surprised me.', options: ['Eric and John\'s', 'Eric and John', 'Eric\'s and John', 'Eric\'s and John\'s'], correct: 4, explanation: 'Поведение у каждого своё — апостроф после каждого имени.' },
+        { topic: 'possessive', text: 'Something in <span class="blank">___</span> behaviour towards him has changed.', options: ['Clara and Bert\'s', 'Clara\'s and Bert', 'Clara and Bert', 'Clara\'s and Bert\'s'], correct: 4, explanation: 'Поведение у каждого своё — апостроф после каждого имени.' },
+        { topic: 'possessive', text: 'Have you noticed that the trees surrounding <span class="blank">___</span> house have grown considerably bigger?', options: ['John and Mary\'s', 'John\'s and Mary\'s', 'John and Mary', 'John\'s and Mary'], correct: 1, explanation: 'Дом общий — апостроф только после последнего имени.' },
+        { topic: 'possessive', text: 'The people, who witnessed the accident, claimed that it was the <span class="blank">___</span> fault.', options: ['passer-by\'s', 'passer\'s-by', 'passers\'-by', 'passer-bys\''], correct: 1, explanation: 'Апостроф к последнему слову составного существительного: passer-by\'s.' },
+        { topic: 'possessive', text: 'The <span class="blank">___</span> qualifications have been questioned recently.', options: ['commander-in-chief', 'commander-in-chief\'s', 'commander\'s-in-chief', 'commander\'s-in-chiefs'], correct: 2, explanation: 'Апостроф к последнему слову составного существительного: commander-in-chief\'s.' },
+        { topic: 'possessive', text: 'One of the boys used a <span class="blank">___</span> phone to call an ambulance.', options: ['passer\'s-by', 'passer-by\'s', 'passers\'-by', 'passer-bys\''], correct: 2, explanation: 'Апостроф к последнему слову составного существительного: passer-by\'s.' },
+        { topic: 'numerals', text: 'In the <span class="blank">___</span> century, it was thought that a compass needle pointed north because of some mysterious influence of the stars.', options: ['sixteen', 'sixteen\'s', 'sixteens', 'sixteens\'', 'sixteenth'], correct: 5, explanation: 'Век выражается порядковым числительным: the sixteenth century.' },
+        { topic: 'numerals', text: 'In the <span class="blank">___</span> it was believed that watching television could improve children’s grades.', options: ['sixties', 'sixty', 'sixtieth', 'sixty\'s', 'sixties\''], correct: 1, explanation: 'Десятилетие — множественное число без апострофа: in the sixties.' },
+        { topic: 'gerund_infinitive', text: 'My family stopped <span class="blank">___</span> Scotland every summer when my grandparents moved.', options: ['to visit', 'visiting', 'visit', 'visited', 'to visiting'], correct: 2, explanation: 'stop doing something — -ing форма: visiting.' },
+        { topic: 'other', text: 'Patricia provided us with <span class="blank">___</span> great deal of <span class="blank">___</span> helpful advice.', options: ['a, —', 'the, a', '—, —', 'the, the', 'a, a'], correct: 1, explanation: '"a great deal of" — устойчивое выражение с неопр. артиклем; advice — неисчисляемое, нулевой артикль.' }
+    ];
+
+    let currentIdx = 0;
+    let answered = new Array(tasks.length).fill(false);
+    let wasCorrect = new Array(tasks.length).fill(null);
+    let userAnswersLog = new Array(tasks.length).fill(null);
+    let userAnswer = null;
+
+    const scoreEl = document.getElementById('score-display');
+    const questionText = document.getElementById('question-text');
+    const optionsContainer = document.getElementById('options-container');
+    const feedbackEl = document.getElementById('feedback');
+    const fbTitle = document.getElementById('fb-title');
+    const fbExplanation = document.getElementById('fb-explanation');
+    const checkBtn = document.getElementById('check-btn');
+    const showBtn = document.getElementById('show-btn');
+    const completeMsg = document.getElementById('complete-msg');
+    const jumpNav = document.getElementById('jump-nav');
+    const taskIdEl = document.getElementById('current-id');
+
+    function buildJumpNav() {
+        jumpNav.innerHTML = '';
+        tasks.forEach((t, idx) => {
+            const btn = document.createElement('button');
+            btn.className = 'jump-btn';
+            btn.textContent = idx + 1;
+            btn.id = 'jump-' + idx;
+            btn.onclick = () => { currentIdx = idx; renderTask(); };
+            jumpNav.appendChild(btn);
+        });
+        updateJumpNav();
+    }
+
+    function updateJumpNav() {
+        tasks.forEach((t, idx) => {
+            const btn = document.getElementById('jump-' + idx);
+            btn.classList.remove('done-correct', 'done-wrong', 'current');
+            if (answered[idx]) btn.classList.add(wasCorrect[idx] ? 'done-correct' : 'done-wrong');
+            if (idx === currentIdx) btn.classList.add('current');
+        });
+    }
+
+    function renderTask() {
+        const task = tasks[currentIdx];
+        taskIdEl.textContent = currentIdx + 1;
+        questionText.innerHTML = task.text;
+        feedbackEl.className = 'feedback';
+        feedbackEl.style.display = 'none';
+        checkBtn.disabled = false;
+        checkBtn.textContent = 'Проверить';
+        showBtn.classList.add('hidden');
+        completeMsg.style.display = 'none';
+
+        const solved = answered.filter(a => a === true).length;
+        scoreEl.textContent = `Решено: ${solved} / ${tasks.length}`;
+
+        optionsContainer.innerHTML = '';
+        task.options.forEach((opt, index) => {
+            const label = document.createElement('label');
+            label.className = 'option-item';
+            const radio = document.createElement('input');
+            radio.type = 'radio';
+            radio.name = 'q-option';
+            radio.value = index + 1;
+            label.appendChild(radio);
+            const span = document.createElement('span');
+            span.textContent = `${index + 1}) ${opt}`;
+            label.appendChild(span);
+            label.onclick = () => selectOption(label, index + 1);
+            optionsContainer.appendChild(label);
+        });
+        userAnswer = null;
+
+        if (answered[currentIdx]) {
+            checkBtn.disabled = true;
+            checkBtn.textContent = 'Проверено';
+            showBtn.classList.remove('hidden');
+            const allLabels = optionsContainer.querySelectorAll('.option-item');
+            allLabels.forEach((l, idx) => {
+                l.classList.add((idx + 1) === task.correct ? 'correct' : 'wrong');
+                l.style.pointerEvents = 'none';
+                l.querySelector('input').disabled = true;
+            });
+            showFeedback(wasCorrect[currentIdx], task.correct, task.explanation);
+        }
+        updateJumpNav();
+    }
+
+    function selectOption(label, value) {
+        if (answered[currentIdx]) return;
+        const allLabels = optionsContainer.querySelectorAll('.option-item');
+        allLabels.forEach(l => l.classList.remove('selected'));
+        label.classList.add('selected');
+        userAnswer = value;
+    }
+
+    function checkAnswer() {
+        if (answered[currentIdx]) return;
+        const task = tasks[currentIdx];
+        if (userAnswer === null) { alert('Пожалуйста, выберите вариант ответа!'); return; }
+        const isCorrect = userAnswer === task.correct;
+        answered[currentIdx] = true;
+        wasCorrect[currentIdx] = isCorrect;
+        userAnswersLog[currentIdx] = task.options[userAnswer - 1];
+
+        const allLabels = optionsContainer.querySelectorAll('.option-item');
+        allLabels.forEach((l, idx) => {
+            l.style.pointerEvents = 'none';
+            l.querySelector('input').disabled = true;
+            if ((idx + 1) === task.correct) l.classList.add('correct');
+            else if ((idx + 1) === userAnswer) l.classList.add('wrong');
+        });
+
+        checkBtn.disabled = true;
+        checkBtn.textContent = 'Проверено';
+        showBtn.classList.remove('hidden');
+        showFeedback(isCorrect, task.correct, task.explanation);
+        scoreEl.textContent = `Решено: ${answered.filter(a => a).length} / ${tasks.length}`;
+        updateJumpNav();
+        if (answered.every(a => a)) completeMsg.style.display = 'block';
+        if (!isCorrect) registerMistakeForTopic(task.topic);
+    }
+
+    function showAnswer() {
+        const task = tasks[currentIdx];
+        alert(`Правильный ответ: ${task.correct}) ${task.options[task.correct - 1]}`);
+    }
+
+    function showFeedback(isCorrect, correctVal, explanation) {
+        feedbackEl.style.display = 'block';
+        feedbackEl.className = 'feedback ' + (isCorrect ? 'correct' : 'wrong');
+        fbTitle.textContent = isCorrect ? '✅ Верно!' : '❌ Неправильно';
+        fbExplanation.innerHTML = `<strong>Пояснение:</strong> ${explanation}`;
+    }
+
+    function prevTask() { if (currentIdx > 0) { currentIdx--; renderTask(); } }
+    function nextTask() { if (currentIdx < tasks.length - 1) { currentIdx++; renderTask(); } }
+
+    /* ============ MISTAKE COUNTING BY TOPIC + AUTO-PAUSE ============ */
+    const topicLabels = {
+        comparative: 'Сравнительная/превосходная степень',
+        gerund_infinitive: 'Герундий или инфинитив (mind/stop/remember/regret)',
+        possessive: 'Притяжательный падеж',
+        numerals: 'Числительные и возраст',
+        other: 'Прочее'
+    };
+    let mistakeCountByTopic = {};
+    let globalMistakeCount = 0;
+    let pausedForTopic = null;
+
+    function registerMistakeForTopic(topic) {
+        globalMistakeCount++;
+        if (topic) {
+            mistakeCountByTopic[topic] = (mistakeCountByTopic[topic] || 0) + 1;
+            if (mistakeCountByTopic[topic] % 2 === 0) {
+                pauseTestForTopic(topic);
+                return;
+            }
+        }
+        if (globalMistakeCount % 3 === 0) {
+            pauseTestForTopic(null, false);
+        }
+    }
+
+    function pauseTestForTopic(topic, manual) {
+        pausedForTopic = topic;
+        document.getElementById('test-card').classList.add('hidden');
+        const banner = document.getElementById('pause-banner');
+        banner.classList.remove('hidden');
+        const titleEl = document.getElementById('pause-banner-title');
+        const hintEl = document.getElementById('pause-banner-hint');
+        if (manual) {
+            titleEl.textContent = 'Тест завершён по вашему решению:';
+            document.getElementById('pause-banner-text').textContent =
+                `всего допущено ${globalMistakeCount} ошибки за это прохождение.`;
+            hintEl.textContent = 'Ниже — сводка по всем ошибкам. Можно продолжить тест или закрыть окно.';
+        } else if (topic) {
+            titleEl.textContent = 'Тест приостановлен:';
+            document.getElementById('pause-banner-text').textContent =
+                `у вас уже ${mistakeCountByTopic[topic]} ошибки по теме «${topicLabels[topic] || topic}».`;
+            hintEl.textContent = 'Изучите промпт в открывшемся окне, потом нажмите «Продолжить тест».';
+        } else {
+            titleEl.textContent = 'Тест приостановлен:';
+            document.getElementById('pause-banner-text').textContent =
+                `у вас уже ${globalMistakeCount} ошибки в разных заданиях теста.`;
+            hintEl.textContent = 'Изучите промпт в открывшемся окне, потом нажмите «Продолжить тест».';
+        }
+        openMistakesModal(topic, true);
+    }
+
+    function finishTestNow() {
+        pauseTestForTopic(null, true);
+    }
+
+    function resumeTest() {
+        pausedForTopic = null;
+        document.getElementById('test-card').classList.remove('hidden');
+        document.getElementById('pause-banner').classList.add('hidden');
+        closeMistakesModal();
+    }
+
+    /* ============ MISTAKES → CHATGPT PROMPT ============ */
+    function stripHtml(html) {
+        const tmp = document.createElement('div');
+        tmp.innerHTML = html.replace(/<span class="blank">___<\/span>/g, '___');
+        return tmp.textContent.replace(/\s+/g, ' ').trim();
+    }
+
+    function collectMistakes(topicFilter) {
+        const list = [];
+        tasks.forEach((task, idx) => {
+            if (answered[idx] && !wasCorrect[idx] && (!topicFilter || task.topic === topicFilter)) {
+                list.push({
+                    n: idx + 1,
+                    topic: task.topic,
+                    question: stripHtml(task.text),
+                    userAnswer: userAnswersLog[idx] || '(не сохранено)',
+                    correct: task.options[task.correct - 1],
+                    explanation: task.explanation
+                });
+            }
+        });
+        return list;
+    }
+
+    function buildMistakesPrompt(mistakes, topicFilter) {
+        const topic = topicFilter
+            ? `«${topicLabels[topicFilter] || topicFilter}» (английский язык, подготовка к ЦТ/ЦЭ)`
+            : 'Выбор правильной грамматической формы, английский язык, подготовка к ЦТ/ЦЭ';
+        let header = `Я готовлюсь к централизованному тестированию (ЦТ) по английскому языку. `
+            + `Прошёл тренажёр по теме ${topic} и ошибся в ${mistakes.length} задании(ях).\n\n`
+            + `Прошу тебя позаниматься со мной по каждой ошибке ниже по следующей методике, ОДНА ошибка за раз, не переходя к следующей, пока не закреплена текущая:\n`
+            + `1. Кратко объясни правило простыми словами — почему здесь именно такая форма.\n`
+            + `2. Проговори (напиши полностью, как для чтения вслух и повторения) правильный вариант фразы или конструкции целиком, чтобы я мог прослушать её и повторить вслух.\n`
+            + `3. Только после этого дай мне 2-3 новых коротких упражнения на именно эту конкретную конструкцию (не на всю тему сразу), похожих по формату на исходное задание, с ответами в конце.\n\n`
+            + `Вот мои ошибки:\n\n`;
+
+        let body = mistakes.map((m, i) =>
+            `${i + 1}) Задание: ${m.question}\n`
+            + `Мой ответ: ${m.userAnswer}\n`
+            + `Правильный ответ: ${m.correct}\n`
+            + `Пояснение из тренажёра: ${m.explanation}\n`
+        ).join('\n');
+
+        return header + body;
+    }
+
+    function openMistakesModal(topicFilter, isPauseContext) {
+        const mistakes = collectMistakes(topicFilter);
+        const summaryEl = document.getElementById('mistakes-summary');
+        const listEl = document.getElementById('mistakes-list');
+        const promptEl = document.getElementById('mistakes-prompt-text');
+        const resumeBtn = document.getElementById('resume-test-btn');
+
+        resumeBtn.classList.toggle('hidden', !isPauseContext);
+
+        if (mistakes.length === 0) {
+            summaryEl.textContent = 'Пока нет ни одной зафиксированной ошибки (либо задания ещё не пройдены, либо все решены верно).';
+            listEl.innerHTML = '';
+            promptEl.value = '';
+        } else {
+            summaryEl.textContent = topicFilter
+                ? `Тема «${topicLabels[topicFilter] || topicFilter}»: ${mistakes.length} ошибка(ок).`
+                : `Найдено ${mistakes.length} ошибка(ок) из ${answered.filter(a => a).length} пройденных заданий.`;
+            listEl.innerHTML = mistakes.map(m =>
+                `<div class="mistake-item"><div class="mq">№${m.n}: ${m.question}</div><div class="ma">Ваш ответ: ${m.userAnswer} → Правильно: ${m.correct}</div></div>`
+            ).join('');
+            promptEl.value = buildMistakesPrompt(mistakes, topicFilter);
+        }
+        document.getElementById('mistakes-modal').classList.remove('hidden');
+    }
+
+    function closeMistakesModal() {
+        document.getElementById('mistakes-modal').classList.add('hidden');
+    }
+
+    function copyMistakesPrompt() {
+        const promptEl = document.getElementById('mistakes-prompt-text');
+        if (!promptEl.value) { alert('Промпт пуст — сначала пройдите задания.'); return; }
+        promptEl.select();
+        try {
+            navigator.clipboard.writeText(promptEl.value).then(() => alert('Промпт скопирован! Вставьте его в ChatGPT.'));
+        } catch (err) {
+            document.execCommand('copy');
+            alert('Промпт скопирован! Вставьте его в ChatGPT.');
+        }
+    }
+
+    buildJumpNav();
+    renderTask();
+
+    function switchTab(name) {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === name));
+        document.getElementById('tab-test').classList.toggle('hidden', name !== 'test');
+        document.getElementById('tab-phrases').classList.toggle('hidden', name !== 'phrases');
+    }
+
+    const phrasesData = [
+        { front: 'mind ___ (waiting)', answer: 'mind doing — I don\'t mind waiting', translation: 'не возражать против чего-либо', tag: 'герундий' },
+        { front: 'stop ___ (buying petrol)', answer: 'stop doing — I\'ve stopped buying petrol', translation: 'перестать делать что-то регулярное', tag: 'герундий' },
+        { front: 'remember ___ (leave the key)', answer: 'remember to do — Remember to leave the key', translation: 'не забыть сделать (в будущем)', tag: 'инфинитив' },
+        { front: 'regret ___ (buying shoes)', answer: 'regret doing — I regret buying these shoes', translation: 'жалеть о том, что уже сделал', tag: 'герундий' },
+        { front: 'much / far / a lot + сравнительная степень', answer: 'much cheaper, far deeper, a lot cheaper', translation: 'усилители сравнительной степени (never "very")', tag: 'сравнение' },
+        { front: 'a hundred + сущ. (без of)', answer: 'a hundred restaurants', translation: 'сотня (точное или округлённое число)', tag: 'числительное' },
+        { front: 'hundreds/thousands of + сущ.', answer: 'hundreds of people, thousands of fans', translation: 'сотни/тысячи (неточное множество)', tag: 'числительное' },
+        { front: 'a thousand thanks', answer: 'a thousand thanks', translation: 'тысяча благодарностей (устойчивое)', tag: 'числительное' },
+        { front: 'in his/her ___ (60)', answer: 'in his sixties / in her forties', translation: 'в свои шестьдесят/сорок с чем-то (десятилетие возраста)', tag: 'числительное' },
+        { front: 'the ___ century (16)', answer: 'the sixteenth century', translation: 'век — порядковое числительное', tag: 'числительное' },
+        { front: 'brother-in-law ___', answer: 'brother-in-law\'s', translation: 'апостроф — к последнему слову составного сущ.', tag: 'притяжательный падеж' },
+        { front: 'Mark and Helen ___ project (общий)', answer: 'Mark and Helen\'s project', translation: 'один общий предмет — апостроф только после последнего имени', tag: 'притяжательный падеж' },
+        { front: 'Tom and Peter ___ behaviour (у каждого своё)', answer: 'Tom\'s and Peter\'s behaviour', translation: 'у каждого своё — апостроф после каждого имени', tag: 'притяжательный падеж' }
+    ];
+
+    let phraseDeck = [];
+    let forgottenSet = new Set();
+    let currentPhrase = null;
+
+    const phraseProgressEl = document.getElementById('phrase-progress');
+    const phraseTagEl = document.getElementById('phrase-tag');
+    const phraseFrontEl = document.getElementById('phrase-front-text');
+    const phraseTranslationEl = document.getElementById('phrase-translation');
+    const phraseAnswerEl = document.getElementById('phrase-answer-text');
+    const phraseBtnRow1 = document.getElementById('phrase-btn-row-1');
+    const phraseBtnRow2 = document.getElementById('phrase-btn-row-2');
+    const phraseDoneMsg = document.getElementById('phrase-done-msg');
+
+    function shuffleArr(arr) {
+        const a = arr.slice();
+        for (let i = a.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+    }
+
+    function initPhraseDeck() {
+        phraseDeck = shuffleArr(phrasesData.map((p, i) => i));
+        forgottenSet = new Set();
+        renderPhrase();
+    }
+
+    function renderPhrase() {
+        if (phraseDeck.length === 0) {
+            document.querySelector('.phrase-card-inner').classList.add('hidden');
+            phraseDoneMsg.classList.remove('hidden');
+            phraseProgressEl.textContent = 'Осталось повторить: 0';
+            return;
+        }
+        document.querySelector('.phrase-card-inner').classList.remove('hidden');
+        phraseDoneMsg.classList.add('hidden');
+        const idx = phraseDeck[0];
+        currentPhrase = phrasesData[idx];
+        phraseProgressEl.textContent = `Осталось повторить: ${phraseDeck.length}`;
+        phraseTagEl.textContent = currentPhrase.tag;
+        phraseFrontEl.textContent = currentPhrase.front;
+        phraseTranslationEl.textContent = currentPhrase.translation;
+        phraseAnswerEl.textContent = currentPhrase.answer;
+        phraseAnswerEl.classList.remove('shown');
+        phraseBtnRow1.classList.remove('hidden');
+        phraseBtnRow2.classList.add('hidden');
+    }
+
+    document.getElementById('phrase-reveal-btn').addEventListener('click', function () {
+        phraseAnswerEl.classList.add('shown');
+        phraseBtnRow1.classList.add('hidden');
+        phraseBtnRow2.classList.remove('hidden');
+    });
+
+    document.getElementById('phrase-speak-btn').addEventListener('click', function () {
+        if (!currentPhrase) return;
+        window.speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(currentPhrase.answer.replace(/[—()]/g, ''));
+        u.lang = 'en-US';
+        window.speechSynthesis.speak(u);
+    });
+
+    document.getElementById('phrase-remembered-btn').addEventListener('click', function () {
+        phraseDeck.shift();
+        renderPhrase();
+    });
+
+    document.getElementById('phrase-forgot-btn').addEventListener('click', function () {
+        const idx = phraseDeck.shift();
+        forgottenSet.add(idx);
+        phraseDeck.push(idx);
+        renderPhrase();
+    });
+
+    function restartPhrases(all) {
+        if (all) { initPhraseDeck(); return; }
+        phraseDeck = shuffleArr(Array.from(forgottenSet));
+        if (phraseDeck.length === 0) { initPhraseDeck(); return; }
+        forgottenSet = new Set();
+        renderPhrase();
+    }
+
+    initPhraseDeck();
+
+    const selPopup = document.getElementById('sel-popup');
+    let pendingSelectionText = '';
+
+    document.addEventListener('mouseup', function (e) {
+        if (selPopup.contains(e.target)) return;
+        setTimeout(() => {
+            const sel = window.getSelection();
+            const text = sel.toString().trim();
+            if (!text || sel.rangeCount === 0) { selPopup.classList.add('hidden'); return; }
+            const anchor = sel.anchorNode;
+            const container = anchor && anchor.nodeType === 3 ? anchor.parentElement : anchor;
+            if (!container || !container.closest('.selectable')) { selPopup.classList.add('hidden'); return; }
+            const cleaned = text.replace(/[^a-zA-Z\s'-]/g, '').trim();
+            if (!cleaned) { selPopup.classList.add('hidden'); return; }
+            pendingSelectionText = cleaned;
+            const range = sel.getRangeAt(0);
+            const rect = range.getBoundingClientRect();
+            selPopup.style.top = (window.scrollY + rect.top - 44) + 'px';
+            selPopup.style.left = (window.scrollX + rect.left) + 'px';
+            selPopup.classList.remove('hidden');
+        }, 10);
+    });
+
+    document.getElementById('sel-speak-btn').addEventListener('click', function () {
+        if (!pendingSelectionText) return;
+        window.speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(pendingSelectionText);
+        u.lang = 'en-US';
+        window.speechSynthesis.speak(u);
+    });
+
+    document.getElementById('sel-add-btn').addEventListener('click', function () {
+        if (!pendingSelectionText) return;
+        addToDictionary(pendingSelectionText);
+        selPopup.classList.add('hidden');
+    });
+
+    let dictionary = [];
+
+    function toggleDictPanel(show) {
+        document.getElementById('dict-panel').classList.toggle('hidden', !show);
+    }
+
+    async function addToDictionary(word) {
+        const key = word.toLowerCase();
+        if (dictionary.some(d => d.word.toLowerCase() === key)) return;
+        const entry = { word: word, transcription: '—' };
+        dictionary.push(entry);
+        renderDict();
+        if (!/\s/.test(word)) {
+            try {
+                const res = await fetch('https://api.dictionaryapi.dev/api/v2/entries/en/' + encodeURIComponent(key));
+                if (res.ok) {
+                    const data = await res.json();
+                    const ph = data[0] && (data[0].phonetic || (data[0].phonetics && data[0].phonetics.find(p => p.text) && data[0].phonetics.find(p => p.text).text));
+                    if (ph) { entry.transcription = ph; renderDict(); }
+                }
+            } catch (err) { /* offline — leave as — */ }
+        }
+    }
+
+    function renderDict() {
+        document.getElementById('dict-count').textContent = dictionary.length;
+        const listEl = document.getElementById('dict-list');
+        const emptyEl = document.getElementById('dict-empty');
+        const printArea = document.getElementById('dict-print-area');
+        emptyEl.style.display = dictionary.length ? 'none' : 'block';
+        listEl.innerHTML = '';
+        printArea.innerHTML = '';
+        dictionary.forEach((d, i) => {
+            const row = document.createElement('div');
+            row.className = 'dict-entry';
+            row.innerHTML = `<span><span class="w">${d.word}</span> <span class="t">${d.transcription}</span></span>`;
+            const delBtn = document.createElement('button');
+            delBtn.className = 'del';
+            delBtn.textContent = 'убрать';
+            delBtn.onclick = () => { dictionary.splice(i, 1); renderDict(); };
+            row.appendChild(delBtn);
+            listEl.appendChild(row);
+
+            const pRow = document.createElement('div');
+            pRow.className = 'dp-entry';
+            pRow.textContent = `${d.word} — ${d.transcription}`;
+            printArea.appendChild(pRow);
+        });
+    }
+
+    function clearDict() {
+        if (dictionary.length && confirm('Очистить весь словарь?')) { dictionary = []; renderDict(); }
+    }
+
+    function printDict() {
+        if (!dictionary.length) { alert('Словарь пуст.'); return; }
+        toggleDictPanel(true);
+        setTimeout(() => window.print(), 50);
+    }
+
+    function copyDict() {
+        if (!dictionary.length) { alert('Словарь пуст.'); return; }
+        const n = Math.ceil(dictionary.length / 3);
+        const col1 = dictionary.slice(0, n);
+        const col2 = dictionary.slice(n, 2 * n);
+        const col3 = dictionary.slice(2 * n);
+        let lines = [];
+        for (let i = 0; i < n; i++) {
+            const a = col1[i] ? `${col1[i].word} — ${col1[i].transcription}` : '';
+            const b = col2[i] ? `${col2[i].word} — ${col2[i].transcription}` : '';
+            const c = col3[i] ? `${col3[i].word} — ${col3[i].transcription}` : '';
+            lines.push([a, b, c].join('\t'));
+        }
+        const text = lines.join('\n');
+        try {
+            navigator.clipboard.writeText(text).then(() => alert('Скопировано в буфер обмена!'));
+        } catch (err) {
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+            alert('Скопировано в буфер обмена!');
+        }
+    }
+
+    renderDict();
+</script>
+</body>
+</html>

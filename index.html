@@ -9,125 +9,111 @@
         --primary: #1a73e8; --bg: #f8f9fa; --card: #ffffff; --text: #202124;
         --success: #34a853; --danger: #ea4335; --border: #dadce0;
     }
-    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 20px; line-height: 1.6; }
-    .container { max-width: 860px; margin: 0 auto; }
-    h1 { text-align: center; color: var(--primary); font-size: 28px; margin-bottom: 4px; }
-    .subtitle { text-align: center; color: #666; font-size: 15px; margin-bottom: 30px; }
+    * { box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 24px 20px; line-height: 1.5; }
+    .container { max-width: 780px; margin: 0 auto; }
 
-    .card { background: var(--card); border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); padding: 26px 30px; margin-bottom: 22px; }
-    .card h2 { margin-top: 0; font-size: 19px; color: var(--primary); }
+    h1 { text-align: center; color: var(--primary); font-size: 24px; margin: 0 0 4px 0; }
+    .subtitle { text-align: center; color: #777; font-size: 14px; margin-bottom: 20px; }
 
-    .fact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px; }
-    @media (max-width: 600px) { .fact-grid { grid-template-columns: 1fr; } }
-    .fact-item { background: #f1f3f4; border-radius: 8px; padding: 12px 14px; font-size: 14px; }
-    .fact-item strong { display: block; color: var(--primary); font-size: 13px; margin-bottom: 4px; }
+    .quick-facts { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-bottom: 26px; }
+    .qf-pill { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 8px 16px; font-size: 13px; display: flex; gap: 6px; align-items: center; }
+    .qf-pill .lbl { color: #888; }
+    .qf-pill .val { font-weight: 600; color: var(--primary); }
 
-    .structure-row { display: flex; gap: 14px; margin-top: 14px; flex-wrap: wrap; }
-    .structure-box { flex: 1; min-width: 220px; border: 1px solid var(--border); border-radius: 10px; padding: 16px; background: #fafbfc; }
-    .structure-box h4 { margin: 0 0 8px 0; color: var(--primary); font-size: 15px; }
-    .structure-box p { margin: 0; font-size: 14px; color: #444; }
-    .structure-box .num { font-size: 26px; font-weight: bold; color: var(--text); }
-
-    .note-box { background: #fff3e0; border: 1px solid #f9902b; border-radius: 10px; padding: 14px 18px; font-size: 14px; margin-top: 16px; }
-    .note-box strong { color: #c96a00; }
-
-    .trainer-grid { display: flex; flex-direction: column; gap: 14px; margin-top: 10px; }
-    .trainer-link { display: grid; grid-template-columns: 56px 1fr auto; gap: 16px; align-items: center; padding: 18px 20px; border-radius: 12px; background: var(--card); border: 1px solid var(--border); text-decoration: none; color: var(--text); transition: 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.03); }
-    .trainer-link:hover { border-color: var(--primary); box-shadow: 0 4px 10px rgba(26,115,232,0.15); transform: translateY(-1px); }
-    .trainer-icon { width: 48px; height: 48px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 24px; color: white; }
+    .trainer-grid { display: flex; flex-direction: column; gap: 14px; margin-bottom: 22px; }
+    .trainer-link { display: grid; grid-template-columns: 52px 1fr auto; gap: 16px; align-items: center; padding: 20px 22px; border-radius: 14px; background: var(--card); border: 1px solid var(--border); text-decoration: none; color: var(--text); transition: 0.2s; box-shadow: 0 2px 6px rgba(0,0,0,0.04); }
+    .trainer-link:hover { border-color: var(--primary); box-shadow: 0 6px 14px rgba(26,115,232,0.18); transform: translateY(-2px); }
+    .trainer-icon { width: 48px; height: 48px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: bold; color: white; }
     .trainer-icon.c1 { background: #1a73e8; }
     .trainer-icon.c2 { background: #34a853; }
     .trainer-icon.c3 { background: #9c27b0; }
-    .trainer-title { font-weight: 600; font-size: 16px; margin-bottom: 4px; }
+    .trainer-title { font-weight: 600; font-size: 16px; margin-bottom: 3px; }
     .trainer-desc { font-size: 13px; color: #666; }
     .trainer-count { font-size: 13px; color: var(--primary); font-weight: 600; white-space: nowrap; }
+    .trainer-arrow { display: none; }
 
-    .sources { font-size: 12px; color: #888; margin-top: 20px; }
-    .sources a { color: #888; }
-    footer { text-align: center; font-size: 12px; color: #999; margin-top: 30px; }
+    details { background: var(--card); border-radius: 12px; padding: 4px 20px; border: 1px solid var(--border); }
+    summary { cursor: pointer; padding: 14px 0; font-weight: 600; color: var(--primary); font-size: 14px; list-style: none; }
+    summary::-webkit-details-marker { display: none; }
+    summary::before { content: "▸ "; }
+    details[open] summary::before { content: "▾ "; }
+    .details-body { padding-bottom: 18px; font-size: 14px; color: #444; }
+    .details-body h4 { color: var(--primary); font-size: 14px; margin: 16px 0 6px 0; }
+    .details-body p { margin: 0 0 8px 0; }
+    .details-body ul { margin: 0 0 8px 0; padding-left: 20px; }
+    .note-box { background: #fff3e0; border: 1px solid #f9902b; border-radius: 8px; padding: 10px 14px; font-size: 13px; margin-top: 10px; }
+    .note-box strong { color: #c96a00; }
+    .sources { font-size: 12px; color: #999; margin-top: 14px; }
+    .sources a { color: #999; }
+    footer { text-align: center; font-size: 12px; color: #aaa; margin-top: 16px; }
 </style>
 </head>
 <body>
 <div class="container">
     <h1>Подготовка к ЦТ по английскому языку</h1>
-    <div class="subtitle">Централизованное тестирование в Республике Беларусь — что это и как готовиться</div>
+    <div class="subtitle">Централизованное тестирование в Республике Беларусь</div>
 
-    <div class="card">
-        <h2>📋 Что такое ЦТ и когда его сдавать в 2026 году</h2>
-        <p style="margin-top:0;">Централизованное тестирование (ЦТ) — вступительное испытание для поступления в вузы Беларуси. Для выпускников школ РБ, получающих аттестат в этом же году, действует отдельный централизованный экзамен (ЦЭ) — совмещённый выпускной и вступительный экзамен. Иностранные абитуриенты (включая граждан России) поступают через ЦТ на общих основаниях.</p>
-
-        <div class="fact-grid">
-            <div class="fact-item"><strong>Регистрация на ЦТ‑2026</strong>с 9 по 22 апреля (онлайн на сайте РИКЗ или лично в пункте регистрации)</div>
-            <div class="fact-item"><strong>Экзамен по английскому (ЦТ и ЦЭ)</strong>26 мая и 2 июня 2026 года</div>
-            <div class="fact-item"><strong>Начало тестирования</strong>11:00</div>
-            <div class="fact-item"><strong>Резервные дни</strong>регистрация 8–11 июня, само тестирование позже в июне</div>
-            <div class="fact-item"><strong>Выдача сертификатов ЦТ</strong>с 1 июля</div>
-            <div class="fact-item"><strong>Официальный источник</strong>сайт РИКЗ — <a href="https://rikc.by" target="_blank">rikc.by</a></div>
-        </div>
-
-        <div class="note-box">⚠️ <strong>Даты и формат могут уточняться.</strong> Перед регистрацией обязательно проверьте актуальный график и спецификации на официальном сайте РИКЗ — постановления Министерства образования иногда вносят изменения.</div>
+    <div class="quick-facts">
+        <div class="qf-pill"><span class="lbl">Регистрация:</span><span class="val">9–22 апреля</span></div>
+        <div class="qf-pill"><span class="lbl">Экзамен:</span><span class="val">26 мая и 2 июня</span></div>
+        <div class="qf-pill"><span class="lbl">Начало:</span><span class="val">11:00</span></div>
+        <div class="qf-pill"><span class="lbl">Сертификаты:</span><span class="val">с 1 июля</span></div>
     </div>
 
-    <div class="card">
-        <h2>📝 Формат теста по английскому языку</h2>
-        <p style="margin-top:0;">Тест состоит из двух частей: часть А — задания закрытого типа (выбор варианта), часть Б — задания с кратким ответом, более сложные и «дороже» по баллам. Точное число заданий и группировка тем немного меняются год от года, но общая логика сохраняется.</p>
-        <div class="structure-row">
-            <div class="structure-box">
-                <div class="num">Часть А</div>
-                <h4>Закрытые задания</h4>
-                <p>Выбор одного верного варианта из предложенных. Основной объём теста, ~48 заданий. Каждое верное — 1 первичный балл. Тематически собраны в 5–8 блоков: артикли, предлоги, времена, степени сравнения, притяжательный падеж, лексическая сочетаемость и т.д.</p>
+    <div class="trainer-grid">
+        <a class="trainer-link" href="trenazher_ct_articles.html">
+            <div class="trainer-icon c1">A</div>
+            <div>
+                <div class="trainer-title">Артикль</div>
+                <div class="trainer-desc">a / an / the / нулевой, география, устойчивые обороты</div>
             </div>
-            <div class="structure-box">
-                <div class="num">Часть Б</div>
-                <h4>Задания с кратким ответом</h4>
-                <p>Более объёмные тексты, работа с репликами, поиск лишнего слова, заполнение пропусков. Каждое верное — 2 первичных балла. Требуют практического владения языком, а не только знания правил.</p>
+            <div class="trainer-count">31 задание</div>
+        </a>
+
+        <a class="trainer-link" href="trenazher_ct_grammar_forms.html">
+            <div class="trainer-icon c2">Б</div>
+            <div>
+                <div class="trainer-title">Грамматическая форма</div>
+                <div class="trainer-desc">Степени сравнения, герундий/инфинитив, притяжательный падеж, числительные</div>
+            </div>
+            <div class="trainer-count">66 заданий</div>
+        </a>
+
+        <a class="trainer-link" href="trenazher_ct_prepositions.html">
+            <div class="trainer-icon c3">П</div>
+            <div>
+                <div class="trainer-title">Предлоги и сочетаемость</div>
+                <div class="trainer-desc">Фразовые глаголы, фиксированные предлоги, выбор слова</div>
+            </div>
+            <div class="trainer-count">56 заданий</div>
+        </a>
+    </div>
+
+    <details>
+        <summary>Подробнее о ЦТ: формат, баллы, источники</summary>
+        <div class="details-body">
+            <p>ЦТ — вступительное испытание для поступления в вузы Беларуси. Для выпускников школ РБ действует отдельный централизованный экзамен (ЦЭ) — совмещённый выпускной и вступительный. Иностранные абитуриенты (включая граждан России) поступают через ЦТ на общих основаниях.</p>
+
+            <h4>Формат теста</h4>
+            <ul>
+                <li><strong>Часть А</strong> — закрытые задания (выбор варианта), ~48 штук, 1 первичный балл за каждое. Собраны в 5–8 тематических блоков: артикли, предлоги, времена, степени сравнения, притяжательный падеж, сочетаемость.</li>
+                <li><strong>Часть Б</strong> — задания с кратким ответом, ~12 штук, 2 первичных балла за каждое. Более объёмные тексты, поиск лишнего слова, работа с репликами.</li>
+                <li>Максимум 72 первичных балла → переводятся в стобалльную шкалу.</li>
+            </ul>
+
+            <div class="note-box">⚠️ Даты, спецификации и число заданий могут уточняться постановлениями Минобразования. Перед регистрацией проверяйте актуальную информацию на сайте РИКЗ.</div>
+
+            <div class="sources">
+                Источники: <a href="https://rikc.by" target="_blank">rikc.by</a> (официальный сайт РИКЗ) ·
+                <a href="https://people.onliner.by" target="_blank">onliner.by</a> ·
+                <a href="https://adukar.by" target="_blank">adukar.by</a> ·
+                <a href="https://teenage.by" target="_blank">teenage.by</a>
             </div>
         </div>
-        <div class="note-box" style="background:#e8f0fe; border-color: var(--primary);">💡 Максимум первичных баллов (по актуальной методике) — 72, которые переводятся в тестовые баллы по стобалльной шкале. Одного знания теории недостаточно — сдающие проверяются на внимательность и знание устойчивых выражений, а не на умение вспомнить формулировку правила.</div>
-    </div>
+    </details>
 
-    <div class="card">
-        <h2>🧰 Тренажёры для подготовки</h2>
-        <p style="margin-top:0; color:#666; font-size:14px;">Три блока, соответствующие основным группам заданий части А. В каждом — теория, практика с моментальной проверкой, тренажёр на память устойчивых конструкций, личный словарь с озвучкой и автоматическая пауза теста при повторяющихся ошибках по одной теме.</p>
-
-        <div class="trainer-grid">
-            <a class="trainer-link" href="trenazher_ct_articles.html">
-                <div class="trainer-icon c1">A</div>
-                <div>
-                    <div class="trainer-title">Артикль</div>
-                    <div class="trainer-desc">a / an / the / нулевой артикль, географические названия, устойчивые обороты</div>
-                </div>
-                <div class="trainer-count">31 задание</div>
-            </a>
-
-            <a class="trainer-link" href="trenazher_ct_grammar_forms.html">
-                <div class="trainer-icon c2">Б</div>
-                <div>
-                    <div class="trainer-title">Выбор правильной грамматической формы</div>
-                    <div class="trainer-desc">Степени сравнения, герундий/инфинитив, притяжательный падеж, числительные</div>
-                </div>
-                <div class="trainer-count">66 заданий</div>
-            </a>
-
-            <a class="trainer-link" href="trenazher_ct_prepositions.html">
-                <div class="trainer-icon c3">П</div>
-                <div>
-                    <div class="trainer-title">Предлоги и лексическая сочетаемость</div>
-                    <div class="trainer-desc">Фразовые глаголы, фиксированные предлоги, выбор слова, лишнее слово</div>
-                </div>
-                <div class="trainer-count">56 заданий</div>
-            </a>
-        </div>
-    </div>
-
-    <div class="sources">
-        Источники: <a href="https://rikc.by" target="_blank">rikc.by</a> (официальный сайт РИКЗ) ·
-        <a href="https://people.onliner.by" target="_blank">onliner.by</a> ·
-        <a href="https://adukar.by" target="_blank">adukar.by</a> ·
-        <a href="https://teenage.by" target="_blank">teenage.by</a>
-    </div>
-
-    <footer>Материал для личной подготовки. Актуальные сроки и спецификации всегда проверяйте на сайте РИКЗ.</footer>
+    <footer>Материал для личной подготовки. Актуальные сроки всегда проверяйте на сайте РИКЗ.</footer>
 </div>
 </body>
 </html>
